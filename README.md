@@ -2,7 +2,7 @@
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
 # How to get authorization token?
-1. Visit (imageFX)[https://labs.google/fx/tools/image-fx] page
+1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
 2. Open dev-tools and paste the following code to extract your token
 
 ```javascript
