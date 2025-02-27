@@ -16,6 +16,8 @@ window.prompt("Copy the auth token: ", authToken);
 
 Copy the prompted token and save it into `.auth` file somewhere. Now you can run the following,
 ```bash
+git clone https://github.com/rohitaryal/imageFX-api.git
+cd imageFX-api
 node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
 ```
 
