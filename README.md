@@ -13,13 +13,32 @@ let authToken = obj['props']['pageProps']['session']['access_token'];
 window.prompt("Copy the auth token: ", authToken);
 ```
 
+Copy the prompted token and save it into `.auth` file somewhere.
 
-Copy the prompted token and save it into `.auth` file somewhere. Now you can run the following,
+> [!WARNING]
+> Don't run this program on an untrusted environment or clear your auth cookies
+> from `.auth` file
+
+> [!TIP]
+> You can directly provide auth token from command line using `--auth` flag
+
+# Usage
+Clone the repo:
 ```bash
 git clone https://github.com/rohitaryal/imageFX-api.git
 cd imageFX-api
-node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
 ```
+
+For Bun:
+```bash
+bun src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
+```
+
+For NodeJS:
+```bash
+npx ts-node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
+```
+
 
 `NOTE`: Auth tokens expire in ~3days
 
