@@ -5,8 +5,10 @@ import { saveImage } from "./utils/filemanager.ts";
 
 const parser = new argv.ArgumentParser({
     description: "Generate ImageFX images directly from your terminal",
+
 });
 
+// Register some flags
 parser.add_argument("--auth", {
     type: "str",
     help: "Authentication token for generating images",
@@ -37,6 +39,7 @@ parser.add_argument("--dir", {
 
 const args = parser.parse_args();
 
+// Check if auth file is already present
 if (args.authf && fs.existsSync(args.authf)) {
     try {
         args.auth = fs.readFileSync(args.authf, { encoding: "utf-8" });
@@ -47,6 +50,7 @@ if (args.authf && fs.existsSync(args.authf)) {
     }
 }
 
+// Terminate if auth file is not present
 if (!args.auth) {
     console.log(
         "[!] Missing authentication token. Please refer to: github.com/rohitaryal/imageFX-api",
@@ -61,6 +65,7 @@ if (!args.prompt) {
     process.exit(1);
 }
 
+// If directory pointed by `--dir` exists
 if (args.dir && !fs.existsSync(args.dir) && args.dir != ".") {
     try {
         fs.mkdirSync(args.dir, { recursive: true });
@@ -70,6 +75,7 @@ if (args.dir && !fs.existsSync(args.dir) && args.dir != ".") {
     }
 }
 
+// Generate images
 generateImage({
     prompt: args.prompt,
     authorization: args.auth,

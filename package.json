@@ -11,5 +11,6 @@
   },
   "dependencies": {
     "argparse": "^2.0.1"
-  }
+  },
+  "main": "./src/index.ts"
 }
