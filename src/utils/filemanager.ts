@@ -1,6 +1,14 @@
 import fs from "fs";
 import path from "path";
 
+/**
+* Saves content to a file
+* @param fileName Name of file to save contents to.
+* @param fileContent Content to save to `fileName`
+* @param encoding Encoding to use (base64, yada yada)
+* @param filePath Path to save to.
+* @returns boolean Will return `true` if saved properly else `false`.
+*/
 const saveFile = (
     fileName: string,
     fileContent: string,
