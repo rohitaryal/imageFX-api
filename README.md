@@ -1,14 +1,16 @@
 # imageFX-api
+---
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
 # How to get authorization token?
+---
 1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
 2. Open dev-tools and paste the following code to extract your token
 
 ```javascript
 let script = document.querySelector("#__NEXT_DATA__");
 let obj = JSON.parse(script.textContent);
-let authToken = obj['props']['pageProps']['session']['access_token'];
+let authToken = obj["props"]["pageProps"]["session"]["access_token"];
 
 window.prompt("Copy the auth token: ", authToken);
 ```
@@ -23,7 +25,9 @@ Copy the prompted token and save it into `.auth` file somewhere.
 > You can directly provide auth token from command line using `--auth` flag
 
 # Usage
+---
 Clone the repo:
+
 ```bash
 git clone https://github.com/rohitaryal/imageFX-api.git
 cd imageFX-api
@@ -39,10 +43,29 @@ For NodeJS:
 npx ts-node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
 ```
 
-
 `NOTE`: Auth tokens expire in ~3days
 
-# Usage
+# Importing as a module
+---
+Please check (examples)[./example].
+
+```javascript
+import generateImage from "imageFX-api";
+import { saveImage } from "../src/utils/filemanager";
+
+let i = 0;
+
+await generateImage({
+    prompt: "door is lava",
+    auth: process.env.AUTH,
+    imageCount: 5,
+}).then(
+    image => saveImage(`image-${i++}.png`, image.encodedImage)
+);
+```
+
+# More Usage
+___
 ```bash
 usage: cli.ts [-h] [--auth AUTH] [--seed SEED] [--count COUNT]
               [--prompt PROMPT] [--authf AUTHF] [--dir DIR]
