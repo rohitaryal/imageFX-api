@@ -55,9 +55,11 @@ await generateImage({
     prompt: "door is lava",
     auth: process.env.AUTH,
     imageCount: 5,
-}).then(
-    image => saveImage(`image-${i++}.png`, image.encodedImage)
-);
+}).then((image) => {
+    image.imagePanels[0].generatedImages.forEach((image, index) => {
+        saveImage(`image-${++i}.png`, image.encodedImage);
+    });
+});
 ```
 
 # More Usage
