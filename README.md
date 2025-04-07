@@ -1,9 +1,7 @@
 # imageFX-api
----
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
 # How to get authorization token?
----
 1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
 2. Open dev-tools and paste the following code to extract your token
 
@@ -25,7 +23,6 @@ Copy the prompted token and save it into `.auth` file somewhere.
 > You can directly provide auth token from command line using `--auth` flag
 
 # Usage
----
 Clone the repo:
 
 ```bash
@@ -46,8 +43,7 @@ npx ts-node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_
 `NOTE`: Auth tokens expire in ~3days
 
 # Importing as a module
----
-Please check (examples)[./example].
+Please check [./example](./example).
 
 ```javascript
 import generateImage from "imageFX-api";
@@ -65,7 +61,6 @@ await generateImage({
 ```
 
 # More Usage
-___
 ```bash
 usage: cli.ts [-h] [--auth AUTH] [--seed SEED] [--count COUNT]
               [--prompt PROMPT] [--authf AUTHF] [--dir DIR]
