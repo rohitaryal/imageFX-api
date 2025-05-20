@@ -1,7 +1,7 @@
 # imageFX-api
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
-Golang version can be found [here](https://github.com/rohitaryal/imageGO).
+Golang version can be found [here](https://github.com/rohitaryal/imageGO) (https://github.com/rohitaryal/imageGO)
 
 # How to get authorization token?
 1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
