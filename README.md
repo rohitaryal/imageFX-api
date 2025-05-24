@@ -15,15 +15,6 @@ let authToken = obj["props"]["pageProps"]["session"]["access_token"];
 window.prompt("Copy the auth token: ", authToken);
 ```
 
-Copy the prompted token and save it into `.auth` file somewhere.
-
-> [!WARNING]
-> Don't run this program on an untrusted environment or clear your auth cookies
-> from `.auth` file
-
-> [!TIP]
-> You can directly provide auth token from command line using `--auth` flag
-
 # Usage
 Clone the repo:
 
@@ -34,15 +25,23 @@ cd imageFX-api
 
 For Bun:
 ```bash
-bun src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
+bun src/cli.ts --prompt "purple cat" --auth "[your authentication token here]"
 ```
 
 For NodeJS:
 ```bash
-npx ts-node src/cli.ts --prompt "purple cat" --authf "[path_to_your_saved_.auth_file]"
+npx ts-node src/cli.ts --prompt "purple cat" --auth "[your authentication token here]"
 ```
 
 `NOTE`: Auth tokens expire in ~3days
+
+
+> [!WARNING]
+> Don't run this program on an untrusted environment or clear your auth cookies
+> from `.auth` file
+
+> [!TIP]
+> You can provide auth token from file using `--authf` flag
 
 # Importing as a module
 Please check [./example](./example).
@@ -66,19 +65,20 @@ await generateImage({
 
 # More Usage
 ```bash
-usage: cli.ts [-h] [--auth AUTH] [--seed SEED] [--count COUNT]
-              [--prompt PROMPT] [--authf AUTHF] [--dir DIR]
+usage: cli.ts [-h] [--auth AUTH] [--seed SEED] [--count COUNT] [--prompt PROMPT] [--authf AUTHF] [--dir DIR] [--model MODEL]
+              [--aspect-ratio ASPECT_RATIO]
 
 Generate ImageFX images directly from your terminal
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --auth AUTH      Authentication token for generating images
-  --seed SEED      Seed value for a reference image (Default: null)
-  --count COUNT    Number of images to generate (Default: 4)
-  --prompt PROMPT  Prompt for generating image
-  --authf AUTHF    Read auth token from plain text '.auth' file from given
-                   path
-  --dir DIR        Location to save generated images (Default: .)
-
+  -h, --help            show this help message and exit
+  --auth AUTH           Authentication token for generating images
+  --seed SEED           Seed value for a reference image (Default: null)
+  --count COUNT         Number of images to generate (Default: 4)
+  --prompt PROMPT       Prompt for generating image
+  --authf AUTHF         Read auth token from plain text '.auth' file from given path
+  --dir DIR             Location to save generated images (Default: .)
+  --model MODEL         Model to use for generating images (Default: IMAGEN_3)
+  --aspect-ratio ASPECT_RATIO
+                        Aspect ratio for generated images (Default: IMAGE_ASPECT_RATIO_SQUARE)
 ```
