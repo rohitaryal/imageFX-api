@@ -5,6 +5,8 @@ interface GenerateImageProps {
     prompt: string;
     imageCount: number;
     authorization: string;
+    model: "IMAGEN_2" | "IMAGEN_3" | "IMAGEN_3_1" | "IMAGEN_3_5" | "IMAGEN_2_LANDSCAPE" | "IMAGEN_3_PORTRAIT" | "IMAGEN_3_LANDSCAPE" | "IMAGEN_3_PORTRAIT_THREE_FOUR" | "IMAGEN_3_LANDSCAPE_FOUR_THREE" | "IMAGE_MODEL_NAME_UNSPECIFIED";
+    aspectRatio: "IMAGE_ASPECT_RATIO_SQUARE" | "IMAGE_ASPECT_RATIO_PORTRAIT" | "IMAGE_ASPECT_RATIO_LANDSCAPE" | "IMAGE_ASPECT_RATIO_UNSPECIFIED" | "IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE" | "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR";
 }
 
 interface ModelResponse {
@@ -35,6 +37,8 @@ const generateImage = ({
     imageCount,
     authorization,
     seed,
+    model,
+    aspectRatio,
 }: GenerateImageProps) => {
     return new Promise(
         (
@@ -52,13 +56,13 @@ const generateImage = ({
                         seed: seed,
                     },
                     clientContext: {
-                        sessionId: ";1740656431200",
+                        sessionId: ";1740658431200",
                         tool: "IMAGE_FX",
                     },
                     modelInput: {
-                        modelNameType: "IMAGEN_3_1",
+                        modelNameType: model,
                     },
-                    aspectRatio: "IMAGE_ASPECT_RATIO_LANDSCAPE",
+                    aspectRatio: aspectRatio,
                 }),
             })
                 .then((response) => response.json())
