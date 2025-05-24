@@ -8,6 +8,32 @@ const parser = new argv.ArgumentParser({
 
 });
 
+/*
+model: "IMAGEN_2" | "IMAGEN_3" | "IMAGEN_3_1" | "IMAGEN_3_5" | "IMAGEN_2_LANDSCAPE" | "IMAGEN_3_PORTRAIT" | "IMAGEN_3_LANDSCAPE" | "IMAGEN_3_PORTRAIT_THREE_FOUR" | "IMAGEN_3_LANDSCAPE_FOUR_THREE" | "IMAGE_MODEL_NAME_UNSPECIFIED";
+    aspectRatio: "IMAGE_ASPECT_RATIO_SQUARE" | "IMAGE_ASPECT_RATIO_PORTRAIT" | "IMAGE_ASPECT_RATIO_LANDSCAPE" | "IMAGE_ASPECT_RATIO_UNSPECIFIED" | "IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE" | "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR";
+ */
+
+const modelChoices = [
+    "IMAGEN_2",
+    "IMAGEN_3",
+    "IMAGEN_3_1",
+    "IMAGEN_3_5",
+    "IMAGEN_2_LANDSCAPE",
+    "IMAGEN_3_PORTRAIT",
+    "IMAGEN_3_LANDSCAPE",
+    "IMAGEN_3_PORTRAIT_THREE_FOUR",
+    "IMAGEN_3_LANDSCAPE_FOUR_THREE",
+    "IMAGE_MODEL_NAME_UNSPECIFIED",
+];
+const aspectRatioChoices = [
+    "IMAGE_ASPECT_RATIO_SQUARE",
+    "IMAGE_ASPECT_RATIO_PORTRAIT",
+    "IMAGE_ASPECT_RATIO_LANDSCAPE",
+    "IMAGE_ASPECT_RATIO_UNSPECIFIED",
+    "IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE",
+    "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
+];
+
 // Register some flags
 parser.add_argument("--auth", {
     type: "str",
@@ -35,6 +61,16 @@ parser.add_argument("--dir", {
     type: "str",
     default: ".",
     help: "Location to save generated images (Default: .)",
+});
+parser.add_argument("--model", {
+    type: "str",
+    default: "IMAGEN_3",
+    help: "Model to use for generating images (Default: IMAGEN_3)",
+});
+parser.add_argument("--aspect-ratio", {
+    type: "str",
+    default: "IMAGE_ASPECT_RATIO_SQUARE",
+    help: "Aspect ratio for generated images (Default: IMAGE_ASPECT_RATIO_SQUARE)",
 });
 
 const args = parser.parse_args();
@@ -75,12 +111,30 @@ if (args.dir && !fs.existsSync(args.dir) && args.dir != ".") {
     }
 }
 
+if (!modelChoices.includes(args.model)) {
+    console.log("[!] Invalid model choice.");
+    console.log(
+        `Available models: ${modelChoices.join(", ")} (Default: IMAGEN_3)`,
+    );
+    process.exit(1);
+}
+
+if (!aspectRatioChoices.includes(args.aspect_ratio)) {
+    console.log("[!] Invalid aspect ratio choice.");
+    console.log(
+        `Available aspect ratios: ${aspectRatioChoices.join(", ")} (Default: IMAGE_ASPECT_RATIO_SQUARE)`,
+    );
+    process.exit(1);
+}
+
 // Generate images
 generateImage({
     prompt: args.prompt,
     authorization: args.auth,
     imageCount: args.count,
     seed: args.seed,
+    model: args.model,
+    aspectRatio: args.aspect_ratio,
 })
     .then((data) => {
         let imageNumber = 1;
