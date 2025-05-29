@@ -1,7 +1,8 @@
 # imageFX-api
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
-Golang version can be found [here](https://github.com/rohitaryal/imageGO) (https://github.com/rohitaryal/imageGO)
+Golang version can be found [here](https://github.com/rohitaryal/imageGO)  
+Whisk API client can be found [here](https://github.com/rohitaryal/whisk-api)
 
 # How to get authorization token?
 1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
