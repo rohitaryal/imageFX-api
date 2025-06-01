@@ -9,6 +9,9 @@ Unofficial reverse engineered api for imageFX service provided by labs.google
 Golang version can be found [here](https://github.com/rohitaryal/imageGO)  
 Whisk API client can be found [here](https://github.com/rohitaryal/whisk-api)
 
+> [!TIP]
+> Please refer to [HELP](#help) section to to extract cookies, authentication token.
+
 ## Installation
 ```bash
 npm i -g @rohitaryal/imagefx-api
@@ -92,6 +95,45 @@ resp.Ok.forEach((image, index) => {
 - `Ok: T` - If it was success, result will be here
 - `Err: Error` - In case of failure, error message will be here
 
+</details>
+
+## Help
+
+<details>
+<summary>How to extract cookies?</summary>
+
+1. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
+2. Press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>I</kbd> to open console
+3. Click on `Application` tab at top of console
+4. At lower left section, double click on `Cookies`
+5. Click on the `https://labs.google`
+6. Copy the corresponding value of `__Secure-next-auth.session-token`
+
+</details>
+
+<details>
+<summary>How to obtain authentication token?</summary>
+
+1. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
+2. Press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>I</kbd> to open console
+3. Paste the following code into console
+```js
+let script = document.querySelector("#__NEXT_DATA__");
+let obj = JSON.parse(script.textContent);
+let authToken = obj["props"]["pageProps"]["session"]["access_token"];
+
+window.prompt("Copy the auth token: ", authToken);
+```
+4. Copy the content from the prompt box.
+
+</details>
+
+<details>
+<summary>ImageFX not available on your region?</summary>
+
+1. Connect to a VPN with US regions
+2. Login to [labs.google](https://labs.google/fx/tools/image-fx)
+3. Follow above guide to extract the **Authentication Token** and not the cookies.
 </details>
 
 ## Contributions
