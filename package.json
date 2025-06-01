@@ -5,6 +5,7 @@
   "files": [
     "dist"
   ],
+  "bin": "./dist/cli.js",
   "type": "module",
   "private": false,
   "devDependencies": {
