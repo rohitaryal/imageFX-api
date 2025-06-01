@@ -1,16 +1,49 @@
 {
-  "name": "imagefx-api",
-  "module": "src/index.ts",
+  "name": "@rohitaryal/imagefx-api",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "private": true,
+  "private": false,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/yargs": "^17.0.33",
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "argparse": "^2.0.1"
+    "yargs": "^18.0.0"
   },
-  "main": "./src/index.ts"
+  "main": "./dist/index.js",
+  "description": "Unofficial reverse engineered api for imageFX service provided by labs.google",
+  "version": "1.0.0",
+  "directories": {
+    "example": "example",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "bun test",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohitaryal/imageFX-api.git"
+  },
+  "keywords": [
+    "imagefx-api",
+    "imagefx",
+    "ai-image",
+    "image-generation",
+    "free-api"
+  ],
+  "author": "Rohit Aryal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rohitaryal/imageFX-api/issues"
+  },
+  "homepage": "https://github.com/rohitaryal/imageFX-api#readme"
 }
