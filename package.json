@@ -16,5 +16,11 @@
   "scripts": {
     "build": "tsc && chmod +x ./dist/cli.js",
     "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.33"
   }
 }
