@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import fs from "fs";
+import { existsSync, mkdirSync } from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { saveImage } from "./utils/filemanager.js";
@@ -83,9 +83,9 @@ if (!argv.auth && !argv.cookie) {
 }
 
 // Create destination dir if it doesn't exist
-if (argv.dir && !fs.existsSync(argv.dir) && argv.dir !== ".") {
+if (argv.dir && !existsSync(argv.dir) && argv.dir !== ".") {
   try {
-    fs.mkdirSync(argv.dir, { recursive: true });
+    mkdirSync(argv.dir, { recursive: true });
   } catch (err) {
     console.error(`[!] Failed to make destination directory: ${argv.dir}`);
     console.error(err);
