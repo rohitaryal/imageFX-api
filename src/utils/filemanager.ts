@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import {existsSync,mkdirSync, writeFileSync } from "fs";
+import {join, parse} from "path";
 
 /**
 * Saves content to a file
@@ -14,16 +14,16 @@ const saveFile = (
   encoding: BufferEncoding = "utf-8",
   filePath: string = ".",
 ): void => {
-  const fullPath = path.join(filePath, fileName);
-  const parsedPath = path.parse(fullPath);
+  const fullPath = join(filePath, fileName);
+  const parsedPath = parse(fullPath);
 
   if (
     parsedPath.dir &&
-    !fs.existsSync(parsedPath.dir) &&
+    !existsSync(parsedPath.dir) &&
     parsedPath.dir != "."
   ) {
     try {
-      fs.mkdirSync(parsedPath.dir, { recursive: true });
+      mkdirSync(parsedPath.dir, { recursive: true });
 
     } catch (error) {
 
@@ -33,7 +33,7 @@ const saveFile = (
   }
 
   try {
-    fs.writeFileSync(fullPath, fileContent, { encoding });
+    writeFileSync(fullPath, fileContent, { encoding });
     console.log(`[+] ${fileName} saved successfully at: ${filePath}`)
 
   } catch (error) {
