@@ -1,85 +1,101 @@
 # imageFX-api
 Unofficial reverse engineered api for imageFX service provided by labs.google
 
+<center>
+    <img src="./misc/banner.png" style="border-radius:10px" height="300px">
+</center>
+<br>
+
 Golang version can be found [here](https://github.com/rohitaryal/imageGO)  
 Whisk API client can be found [here](https://github.com/rohitaryal/whisk-api)
 
-# How to get authorization token?
-1. Visit [imageFX](https://labs.google/fx/tools/image-fx) page
-2. Open dev-tools and paste the following code to extract your token
+## Installation
+```bash
+npm i -g @rohitaryal/imagefx-api
+```
+## Usage
+
+<details>
+<summary>Command Line</summary>
+
+
+```bash
+imagefx --prompt "purple cat" --cookie "$COOKIE"
+```
+
+You can also use authentication token instead.
+
+```bash
+imagefx --prompt "purple cat" --auth "$TOKEN"
+```
+
+If one is present the other one is optional, but generating new authentication token will require cookies. So, its better to use the first one since it generates authentication token internally.
+
+#### Full Usage Options:
+```text
+Usage: imagefx [options]
+
+Options:
+  --version        Show version number                      [boolean]
+  --auth           Authentication token for generating images [string]
+  --cookie         Cookie (for auto auth token generation)   [string]
+  --seed           Seed for reference image                  [number] [default: null]
+  --count          Number of images to generate              [number] [default: 4]
+  --prompt         Prompt for image generation               [string] [required]
+  --dir            Directory to save images                  [string] [default: "."]
+  --model          Model to use for generation                [string] [default: IMAGEN_4]
+                   Choices: IMAGEN_2, IMAGEN_3, IMAGEN_4,
+                            IMAGEN_3_1, IMAGEN_3_5,
+                            IMAGEN_2_LANDSCAPE, IMAGEN_3_PORTRAIT,
+                            IMAGEN_3_LANDSCAPE, IMAGEN_3_PORTRAIT_THREE_FOUR,
+                            IMAGEN_3_LANDSCAPE_FOUR_THREE,
+                            IMAGE_MODEL_NAME_UNSPECIFIED
+  --ratio          Aspect ratio                               [string] [default: IMAGE_ASPECT_RATIO_LANDSCAPE]
+                   Choices: IMAGE_ASPECT_RATIO_SQUARE,
+                            IMAGE_ASPECT_RATIO_PORTRAIT,
+                            IMAGE_ASPECT_RATIO_LANDSCAPE,
+                            IMAGE_ASPECT_RATIO_UNSPECIFIED,
+                            IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE,
+                            IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR
+  --help           Show help                                [boolean]
+```
+</details>
+
+<details>
+<summary>Importing as module</summary>
 
 ```javascript
-let script = document.querySelector("#__NEXT_DATA__");
-let obj = JSON.parse(script.textContent);
-let authToken = obj["props"]["pageProps"]["session"]["access_token"];
-
-window.prompt("Copy the auth token: ", authToken);
-```
-
-# Usage
-Clone the repo:
-
-```bash
-git clone https://github.com/rohitaryal/imageFX-api.git
-cd imageFX-api
-```
-
-For Bun:
-```bash
-bun src/cli.ts --prompt "purple cat" --auth "[your authentication token here]"
-```
-
-For NodeJS:
-```bash
-npx ts-node src/cli.ts --prompt "purple cat" --auth "[your authentication token here]"
-```
-
-`NOTE`: Auth tokens expire in ~3days
+import * as fs from "fs";
+import ImageFx from "@rohitaryal/imagefx-api";
 
 
-> [!WARNING]
-> Don't run this program on an untrusted environment or clear your auth cookies
-> from `.auth` file
-
-> [!TIP]
-> You can provide auth token from file using `--authf` flag
-
-# Importing as a module
-Please check [./example](./example).
-
-```javascript
-import generateImage from "imageFX-api";
-import { saveImage } from "../src/utils/filemanager";
-
-let i = 0;
-
-await generateImage({
-    prompt: "door is lava",
-    auth: process.env.AUTH,
-    imageCount: 5,
-}).then((image) => {
-    image.imagePanels[0].generatedImages.forEach((image, index) => {
-        saveImage(`image-${++i}.png`, image.encodedImage);
-    });
+const fx = new ImageFx({
+  authorizationKey: process.env.TOKEN
 });
+
+const resp = await fx.generateImage({
+  prompt: "A sigma crocodile, showing off his rizz"
+});
+
+if(resp.Err || !resp.Ok) { // Failed
+    console.log(resp.Err)
+    process.exit(1);
+}
+
+
+resp.Ok.forEach((image, index) => {
+  fs.writeFileSync(`image-${index + 1}.png`, image.encodedImage, "base64")
+})
 ```
 
-# More Usage
-```bash
-usage: cli.ts [-h] [--auth AUTH] [--seed SEED] [--count COUNT] [--prompt PROMPT] [--authf AUTHF] [--dir DIR] [--model MODEL]
-              [--aspect-ratio ASPECT_RATIO]
+**Note**: All function return `Result<T>` and it consists of:
+- `Ok: T` - If it was success, result will be here
+- `Err: Error` - In case of failure, error message will be here
 
-Generate ImageFX images directly from your terminal
+</details>
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --auth AUTH           Authentication token for generating images
-  --seed SEED           Seed value for a reference image (Default: null)
-  --count COUNT         Number of images to generate (Default: 4)
-  --prompt PROMPT       Prompt for generating image
-  --authf AUTHF         Read auth token from plain text '.auth' file from given path
-  --dir DIR             Location to save generated images (Default: .)
-  --model MODEL         Model to use for generating images (Default: IMAGEN_3)
-  --aspect-ratio ASPECT_RATIO
-                        Aspect ratio for generated images (Default: IMAGE_ASPECT_RATIO_SQUARE)
-```
+## Contributions
+Contribution are welcome but ensure to pass all test cases and follow existing coding standard. 
+
+## Desclaimer
+This project demonstrates usage of Google's private API but is not affiliated with Google. Use at your own risk.
