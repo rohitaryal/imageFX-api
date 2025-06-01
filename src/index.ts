@@ -1,4 +1,4 @@
-import { request } from "./utils/request";
+import { request } from "./utils/request.js";
 import type { Credentials, Request, Result, Prompt, GeneratedImage } from "./global.types";
 
 class ImageFx {
