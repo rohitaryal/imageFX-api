@@ -43,5 +43,8 @@ jobs:
             - name: Install Bun
               uses: oven-sh/setup-bun@v2
             
+            - name: Install Dependencies
+              run: bun install
+            
             - name: Publish to NPM
               run: bun publish -p --access public
