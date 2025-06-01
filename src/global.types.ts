@@ -2,6 +2,7 @@
 export type ImageModel =
   | "IMAGEN_2"
   | "IMAGEN_3"
+  | "IMAGEN_4"
   | "IMAGEN_3_1"
   | "IMAGEN_3_5"
   | "IMAGEN_3_PORTRAIT"
@@ -43,4 +44,37 @@ export interface Request {
   | "PUT"
   | "PATCH"
   | "DELETE";
+}
+
+// Prompt information
+export interface Prompt {
+  // Image description
+  prompt: string;
+  // Number of images to generate
+  count?: number;
+  // Same seed value generates similar image
+  seed?: number;
+  // Model to use for generating image
+  model?: ImageModel;
+  // Dimension of generated image
+  aspectRatio?: AspectRatio;
+}
+
+// Represents generated image
+export interface GeneratedImage {
+  // Generated image in base64 format
+  encodedImage: string;
+  seed: number;
+  // Dunno what this is
+  mediaGenerationId: string;
+  // Dunno what this is
+  isMaskEditedImage: boolean;
+  // Prompt used to generate this image
+  prompt: string;
+  // Model used to generate this image
+  modelNameType: ImageModel;
+  // Some project ID, but no use here
+  workflowId: string;
+  // Thing that google uses to track your generated images (maybe)
+  fingerprintLogRecordId: string;
 }
