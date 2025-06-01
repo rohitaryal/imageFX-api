@@ -86,7 +86,7 @@ class ImageFx {
       method: "POST",
       body: JSON.stringify({
         userInput: {
-          candidatesCount: prompt.count || 1,
+          candidatesCount: prompt.count || 4,
           prompts: [prompt.prompt],
           seed: prompt.seed || 0,
         },
