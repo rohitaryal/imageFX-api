@@ -5,7 +5,9 @@
   "files": [
     "dist"
   ],
-  "bin": "./dist/cli.js",
+  "bin": {
+    "imagefx": "./dist/cli.js"
+  },
   "type": "module",
   "private": false,
   "devDependencies": {
@@ -28,7 +30,7 @@
   },
   "scripts": {
     "test": "bun test",
-    "build": "tsc"
+    "build": "tsc && chmod +x dist/cli.js"
   },
   "repository": {
     "type": "git",
