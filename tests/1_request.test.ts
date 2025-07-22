@@ -5,7 +5,7 @@ import { test, expect } from "bun:test";
 test("Testing GET request", async () => {
   const req: Request = {
     method: "GET",
-    url: "https://httpbin.org/get?fizz=buzz",
+    url: "https://postman-echo.com/get?fizz=buzz",
     headers: new Headers({ 'X-Fizz': 'Buzz' })
   };
 
@@ -18,13 +18,13 @@ test("Testing GET request", async () => {
 
   expect(parsedResp.args).toBeDefined()
   expect(parsedResp.args.fizz).toBe("buzz")
-  expect(parsedResp.headers['X-Fizz']).toBe("Buzz")
+  expect(parsedResp.headers['x-fizz']).toBe("Buzz")
 });
 
 test("Testing POST request", async () => {
   const req: Request = {
     method: "POST",
-    url: "https://httpbin.org/post",
+    url: "https://postman-echo.com/post",
     body: "fizz=buzz",
     headers: new Headers({ 'X-Fizz': 'Buzz' })
   };
@@ -37,6 +37,6 @@ test("Testing POST request", async () => {
   const parsedResp = JSON.parse(resp.Ok!); // Saved by --bail
 
   expect(parsedResp.data).toBe("fizz=buzz")
-  expect(parsedResp.headers['X-Fizz']).toBe("Buzz")
+  expect(parsedResp.headers['x-fizz']).toBe("Buzz")
 
 })
