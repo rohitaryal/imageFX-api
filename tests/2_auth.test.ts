@@ -1,5 +1,4 @@
 import ImageFx from "../src";
-import type { Prompt, Request } from "../src/global.types";
 import { test, expect } from "bun:test";
 
 const cookie = process.env.GOOGLE_COOKIE;
