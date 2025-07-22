@@ -113,7 +113,8 @@ if (resp.Err || !resp.Ok) {
 
 // Save images
 resp.Ok?.forEach((image, index) => {
-  const imageName = `image-${index + 1}.png`;
+  const time = new Date().getTime();
+  const imageName = `image-${time}-${index + 1}.png`;
   saveImage(imageName, image.encodedImage, argv.dir);
 });
 
