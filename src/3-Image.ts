@@ -39,10 +39,6 @@ export default class Image {
         return prompt.generate(retry);
     }
 
-    public getMediaId() {
-        return this.mediaId;
-    }
-
     // TODO: Add proper error handelling
     public save(imageName?: string) {
         imageName = imageName ?? `image-${Date.now()}`;
