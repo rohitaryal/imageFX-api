@@ -1,120 +1,139 @@
 #!/usr/bin/env node
-
-import { existsSync, mkdirSync } from "fs";
 import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
-import { saveImage } from "./utils/filemanager.js";
-import ImageFx from "./index.js";
-import type { AspectRatio, ImageModel } from "./global.types.js";
+import { hideBin } from 'yargs/helpers';
+import { AspectRatio, Model } from "./Constants.js";
+import { ImageFX } from "./ImageFX.js";
+import { Prompt } from "./Prompt.js";
 
-const modelChoices = [
-  "IMAGEN_2",
-  "IMAGEN_3",
-  "IMAGEN_4",
-  "IMAGEN_3_1",
-  "IMAGEN_3_5",
-  "IMAGEN_2_LANDSCAPE",
-  "IMAGEN_3_PORTRAIT",
-  "IMAGEN_3_LANDSCAPE",
-  "IMAGEN_3_PORTRAIT_THREE_FOUR",
-  "IMAGEN_3_LANDSCAPE_FOUR_THREE",
-  "IMAGE_MODEL_NAME_UNSPECIFIED",
-] as const;
+const y = yargs();
 
-const aspectRatioChoices = [
-  "IMAGE_ASPECT_RATIO_SQUARE",
-  "IMAGE_ASPECT_RATIO_PORTRAIT",
-  "IMAGE_ASPECT_RATIO_LANDSCAPE",
-  "IMAGE_ASPECT_RATIO_UNSPECIFIED",
-  "IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE",
-  "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
-] as const;
+await y
+    .scriptName("ImageFX")
+    .command(
+        "generate",
+        "Generate new images",
+        (yargs) => {
+            return yargs
+                .option("prompt", {
+                    alias: "p",
+                    describe: "Textual description of image to be generated",
+                    type: "string",
+                })
+                .option("model", {
+                    alias: "m",
+                    describe: "Model to be used for image generation",
+                    type: "string",
+                    default: "IMAGEN_3_5",
+                    choices: Object.values(Model)
+                })
+                .option("count", {
+                    alias: "n",
+                    describe: "Number of images to generate [Max: 8]",
+                    type: "number",
+                    default: 4,
+                })
+                .option("size", {
+                    alias: "sz",
+                    describe: "Aspect ratio of image to be generated",
+                    type: "string",
+                    default: "LANDSCAPE",
+                    choices: Object.values(AspectRatio).map((value) => value.replace("IMAGE_ASPECT_RATIO_", "")),
+                })
+                .option("seed", {
+                    alias: "s",
+                    describe: "Seed value for image to be generated",
+                    type: "number",
+                    default: 0,
+                })
+                .option("retry", {
+                    alias: "r",
+                    describe: "Number of retries if in case fetch fails",
+                    type: "number",
+                    default: 1
+                })
+                .option("dir", {
+                    alias: "d",
+                    describe: "Directory to save generated images",
+                    type: "string",
+                    default: ".",
+                })
+                .option("cookie", {
+                    alias: "c",
+                    describe: "Google account cookie",
+                    type: "string",
+                    demandOption: true,
+                })
+        },
+        async (argv) => {
+            if (!argv.cookie) {
+                console.log("Cookie value is missing :(")
+                return;
+            }
 
-const argv = await yargs(hideBin(process.argv))
-  .usage("Usage: $0 [options]")
-  .option("auth", {
-    type: "string",
-    describe: "Authentication token for generating images",
-  })
-  .option("cookie", {
-    type: "string",
-    describe: "Cookie - if you need to generate auth token automatically",
-  })
-  .option("seed", {
-    type: "number",
-    default: null,
-    describe: "Seed value for a reference image (Default: null)",
-  })
-  .option("count", {
-    type: "number",
-    default: 4,
-    describe: "Number of images to generate (Default: 4)",
-  })
-  .option("prompt", {
-    type: "string",
-    describe: "Prompt for generating image",
-  })
-  .option("dir", {
-    type: "string",
-    default: ".",
-    describe: "Location to save generated images (Default: .)",
-  })
-  .option("model", {
-    type: "string",
-    default: "IMAGEN_4",
-    describe: "Model to use for generating images (Default: IMAGEN_4)",
-    choices: modelChoices,
-  })
-  .option("ratio", {
-    type: "string",
-    default: "IMAGE_ASPECT_RATIO_LANDSCAPE",
-    describe: "Aspect ratio for generated images",
-    choices: aspectRatioChoices,
-  })
-  .demandOption(["prompt"], "[!] Prompt is required.")
-  .help()
-  .parse();
+            if (!argv.prompt) {
+                argv.prompt = "A prompt engineer who forgets to give prompt to AI";
+            }
 
-if (!argv.auth && !argv.cookie) {
-  console.error(
-    "[!] Missing authentication token. Please refer to: github.com/rohitaryal/imageFX-api"
-  );
-  process.exit(1);
-}
+            const fx = new ImageFX(argv.cookie);
+            const prompt = new Prompt({
+                seed: argv.seed,
+                prompt: argv.prompt,
+                numberOfImages: argv.count,
+                generationModel: argv.model as Model,
+                aspectRatio: ("IMAGE_ASPECT_RATIO_" + argv.size) as AspectRatio,
+            });
 
-// Create destination dir if it doesn't exist
-if (argv.dir && !existsSync(argv.dir) && argv.dir !== ".") {
-  try {
-    mkdirSync(argv.dir, { recursive: true });
-  } catch (err) {
-    console.error(`[!] Failed to make destination directory: ${argv.dir}`);
-    console.error(err);
-    process.exit(1);
-  }
-}
+            console.log("[*] Generating. Please wait...");
 
-const fx = new ImageFx({
-  cookie: argv.cookie,
-  authorizationKey: argv.auth,
-});
+            const generatedImages = await fx.generateImage(prompt, argv.retry);
+            generatedImages.forEach((image, index) => {
+                try {
+                    const savedPath = image.save(argv.dir);
+                    console.log("[+] Image saved at:", savedPath);
+                } catch (error) {
+                    console.log("[!] Failed to save an image:", error);
+                }
+            });
+        }
+    )
+    .command(
+        "fetch <mediaId>",
+        "Download a generated image with its mediaId",
+        (yargs) => {
+            return yargs
+                .positional("mediaId", {
+                    describe: "Unique ID of generated image",
+                    type: "string",
+                    demandOption: true,
+                })
+                .option("dir", {
+                    alias: "d",
+                    describe: "Directory to save generated images",
+                    default: ".",
+                    type: "string",
+                })
+                .option("cookie", {
+                    alias: "c",
+                    describe: "Google account cookie",
+                    type: "string",
+                    demandOption: true,
+                })
+        },
+        async (argv) => {
+            const fx = new ImageFX(argv.cookie);
+            const fetchedImage = await fx.getImageFromId(argv.mediaId);
 
-const resp = await fx.generateImage({
-  prompt: argv.prompt,
-  count: argv.count,
-  aspectRatio: argv.ratio as AspectRatio || "IMAGE_ASPECT_RATIO_LANDSCAPE",
-  model: argv.model as ImageModel || "IMAGEN_4",
-  seed: argv.seed || 0,
-});
-
-if (resp.Err || !resp.Ok) {
-  console.error("[!] Failed to generate image: " + resp.Err);
-  process.exit(1);
-}
-
-// Save images
-resp.Ok?.forEach((image, index) => {
-  const time = new Date().getTime();
-  const imageName = `image-${time}-${index + 1}.png`;
-  saveImage(imageName, image.encodedImage, argv.dir);
-});
-
+            try {
+                const savedPath = fetchedImage.save(argv.dir);
+                console.log("[+] Image saved at:", savedPath)
+            } catch (error) {
+                console.log("[!] Failed to save an image:", error)
+            }
+        }
+    )
+    .demandCommand(1, "You need to use at least one command")
+    .wrap(Math.min(y.terminalWidth(), 150))
+    .help()
+    .alias("help", "h")
+    .showHelpOnFail(true)
+    .parse(hideBin(process.argv));

@@ -1,0 +1,62 @@
+import { join } from "path";
+import { AspectRatio, Model } from "./Constants.js";
+import { ImageArg } from "./Types.js";
+import { existsSync, mkdirSync, writeFileSync, } from "fs";
+
+export class ImageError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ImageError";
+    }
+}
+
+export class Image {
+    public readonly seed: number;
+    public readonly model: Model; // modelNameType
+    public readonly prompt: string;
+    public readonly aspectRatio: AspectRatio;
+    public readonly mediaId: string; // mediaGenerationId
+
+    private readonly encodedImage: string;
+    private readonly workflowId: string;
+    private readonly fingerprintId: string; // fingerprintLogRecordId
+
+    constructor(args: ImageArg) {
+        if (!args.encodedImage?.trim()) {
+            throw new ImageError("Encoded image data is required");
+        }
+
+        this.seed = args.seed;
+        this.prompt = args.prompt;
+        this.model = args.modelNameType;
+        this.aspectRatio = args.aspectRatio;
+        // Unrequired stuffs below :|
+        this.workflowId = args.workflowId;
+        this.encodedImage = args.encodedImage;
+        this.mediaId = args.mediaGenerationId;
+        this.fingerprintId = args.fingerprintLogRecordId;
+    }
+
+    public save(filePath = ".") {
+        const imageName = `image-${Date.now()}.png`;
+
+        if (!existsSync(filePath)) {
+            console.log("[*] Creating destination dir:", filePath)
+
+            try {
+                mkdirSync(filePath, { recursive: true });
+            } catch (err) {
+                throw new ImageError(`Failed to create directory ${filePath}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            }
+        }
+
+        try {
+            filePath = join(filePath, imageName);
+            writeFileSync(filePath, this.encodedImage, "base64");
+
+            return filePath;
+        } catch (error) {
+            throw new ImageError("Failed to save image: " + (error instanceof Error ? error.message : "UNKNOWN ERROR"));
+        }
+    }
+}

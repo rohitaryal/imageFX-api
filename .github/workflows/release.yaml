@@ -2,8 +2,6 @@ name: "Test and release to NPM.JS"
 
 on:
     push:
-        branches:
-            - main
         tags:
             - "v*"
 
@@ -13,6 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         
         env:
+            MEDIA_ID: ${{ secrets.MEDIA_ID }}
             GOOGLE_COOKIE: ${{ secrets.GOOGLE_COOKIE }}
 
         steps:

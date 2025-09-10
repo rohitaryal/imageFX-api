@@ -4,3 +4,5 @@ example/
 bun.lock
 package-lock.json
 tsconfig.json
+.github/
+assets/

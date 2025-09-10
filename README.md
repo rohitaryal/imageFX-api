@@ -1,143 +1,166 @@
-# imageFX-api
-Unofficial reverse engineered api for imageFX service provided by labs.google
+# imageFX-api (imagen)
+Unofficial free reverse engineered api for imageFX(imagen) service provided by [labs.google](https://labs.google)
 
-<center>
-    <img src="./misc/banner.png" style="border-radius:10px" height="300px">
-</center>
-<br>
-
-Golang version can be found [here](https://github.com/rohitaryal/imageGO)  
-Whisk API client can be found [here](https://github.com/rohitaryal/whisk-api)
-
-> [!TIP]
-> Please refer to [HELP](#help) section to to extract cookies, authentication token.
+![Banner](https://github.com/rohitaryal/imageFX-api/blob/upgrade/assets/banner.png?raw=true)
 
 ## Installation
 ```bash
 npm i -g @rohitaryal/imagefx-api
 ```
+
 ## Usage
-
+`imagefx` can be invoked through both command line and as a module.
 <details>
-<summary>Command Line</summary>
+<summary style="font-weight: bold;font-size:15px;">Command Line</summary>
 
+Make sure you have:
+1. Installed `imagefx` globally ([How to install?](#installation))
+2. Obtained your google account cookies ([How to get cookies?](#help))
+3. Set env variable `GOOGLE_COOKIE` containing your cookie
+    ```bash
+    export GOOGLE_COOKIE="__YOUR__COOKIE__HERE__"
+    ```
 
-```bash
-imagefx --prompt "purple cat" --cookie "$COOKIE"
-```
+#### Basic Usages:
+- Generating image with prompt
 
-You can also use authentication token instead.
-
-```bash
-imagefx --prompt "purple cat" --auth "$TOKEN"
-```
-
-If one is present the other one is optional, but generating new authentication token will require cookies. So, its better to use the first one since it generates authentication token internally.
-
-#### Full Usage Options:
+    ```bash
+    # saves generated image at current directory
+    imagefx generate --prompt "A bad friend" --cookie $GOOGLE_COOKIE
+    ```
+- Selecting a specific model
+    ```bash
+    # please refer to --help for listing all models
+    imagefx generate --prompt "An evil company" --model "IMAGEN_3_5" --cookie $GOOGLE_COOKIE
+    ```
+- Selecting a specific aspect ratio
+    ```bash
+    # please refer to --help for listing all aspect ratio
+    imagefx generate --prompt "Reptillian CEO" --size "PORTRAIT" --cookie $GOOGLE_COOKIE
+    ```
+- Saving to specific destination
+    ```bash
+    # it will automatically create non-existing directory if possible
+    imagefx generate --prompt "Netflix but with less fees" --dir ~/Pictures --cookie $GOOGLE_COOKIE
+    ```
+- You can also save image using its media id.
+    ```bash
+    imagefx fetch "__MEDIA__ID__HERE__" --cookie $GOOGLE_COOKIE
+    ```
+Full generation help:
 ```text
-Usage: imagefx [options]
+imagefx generate <options>
 
 Options:
-  --version        Show version number                      [boolean]
-  --auth           Authentication token for generating images [string]
-  --cookie         Cookie (for auto auth token generation)   [string]
-  --seed           Seed for reference image                  [number] [default: null]
-  --count          Number of images to generate              [number] [default: 4]
-  --prompt         Prompt for image generation               [string] [required]
-  --dir            Directory to save images                  [string] [default: "."]
-  --model          Model to use for generation                [string] [default: IMAGEN_4]
-                   Choices: IMAGEN_2, IMAGEN_3, IMAGEN_4,
-                            IMAGEN_3_1, IMAGEN_3_5,
-                            IMAGEN_2_LANDSCAPE, IMAGEN_3_PORTRAIT,
-                            IMAGEN_3_LANDSCAPE, IMAGEN_3_PORTRAIT_THREE_FOUR,
-                            IMAGEN_3_LANDSCAPE_FOUR_THREE,
-                            IMAGE_MODEL_NAME_UNSPECIFIED
-  --ratio          Aspect ratio                               [string] [default: IMAGE_ASPECT_RATIO_LANDSCAPE]
-                   Choices: IMAGE_ASPECT_RATIO_SQUARE,
-                            IMAGE_ASPECT_RATIO_PORTRAIT,
-                            IMAGE_ASPECT_RATIO_LANDSCAPE,
-                            IMAGE_ASPECT_RATIO_UNSPECIFIED,
-                            IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE,
-                            IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR
-  --help           Show help                                [boolean]
+      --version     Show version number
+  -h, --help        Show help
+  -p, --prompt      Textual description of image to be generated
+  -m, --model       Model to be used for image generation
+  -n, --count       Number of images to generate
+      --size, --sz  Aspect ratio of image to be generated
+  -s, --seed        Seed value for image to be generated
+  -r, --retry       Number of retries if in case fetch fails
+  -d, --dir         Directory to save generated images
+  -c, --cookie      Google account cookie
+```
+
+Full fetching help:
+```text
+imagefx fetch <mediaId>
+
+Positionals:
+  mediaId  Unique ID of generated image
+
+Options:
+      --version  Show version number
+  -h, --help     Show help
+  -d, --dir      Directory to save generated images
+  -c, --cookie   Google account cookie
 ```
 </details>
 
 <details>
-<summary>Importing as module</summary>
+<summary style="font-weight: bold;font-size:15px;">Importing as module</summary>
 
-```javascript
-import * as fs from "fs";
-import ImageFx from "@rohitaryal/imagefx-api";
+- Basic image generation
 
+    ```typescript
+    import ImageFx from "@rohitaryal/imagefx-api";
 
-const fx = new ImageFx({
-  authorizationKey: process.env.TOKEN
-});
+    const fx = new ImageFX(process.env.GOOGLE_COOKIE);
 
-const resp = await fx.generateImage({
-  prompt: "A sigma crocodile, showing off his rizz"
-});
+    // Generate images
+    const generatedImage = await fx.generateImage("A big black cockroach");
 
-if(resp.Err || !resp.Ok) { // Failed
-    console.log(resp.Err)
-    process.exit(1);
-}
+    // Iterate over multiple images and save
+    generatedImage.forEach(image => {
+        const savedPath = image.save(".cache/");
+            console.log("[+] Image saved at: " + savedPath);
+    });
+    ```
+- More descriptive prompt
+    ```typescript
+    const fx = new ImageFX(GOOGLE_COOKIE);
 
+    const prompt = new Prompt({
+        seed: 0,
+        numberOfImages: 4,
+        prompt: "A green spongebob",
+        generationModel: "IMAGEN_3_5",
+        aspectRatio: "IMAGE_ASPECT_RATIO_SQUARE",
+    });
 
-resp.Ok.forEach((image, index) => {
-  fs.writeFileSync(`image-${index + 1}.png`, image.encodedImage, "base64")
-})
-```
+    // Generate images
+    const generatedImage = await fx.generateImage(prompt);
 
-**Note**: All function return `Result<T>` and it consists of:
-- `Ok: T` - If it was success, result will be here
-- `Err: Error` - In case of failure, error message will be here
+    // Iterate over generated images and save
+    generatedImage.forEach(image => {
+        const savedPath = image.save(".cache/");
+        console.log("[+] Image saved at: " + savedPath);
+    });
+    ```
 
+More examples are at: [/examples](/examples/)
 </details>
 
 ## Help
-
 <details>
-<summary>How to extract cookies?</summary>
+<summary style="font-weight: bold;font-size:15px;">How to extract cookies?</summary>
 
+#### Easy way:
+1. Install [Cookie Editor](https://github.com/Moustachauve/cookie-editor) extension in your browser.
+2. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
+3. Click on <kbd>Cookie Editor</kbd> icon from Extensions section.
+4. Click on <kbd>Export</kbd> -> <kbd>Header String</kbd>
+
+#### Manual way:
 1. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
 2. Press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>I</kbd> to open console
-3. Click on `Application` tab at top of console
-4. At lower left section, double click on `Cookies`
-5. Click on the `https://labs.google`
-6. Copy the corresponding value of `__Secure-next-auth.session-token`
+3. Click on <kbd>Network</kbd> tab at top of console
+4. Press <kbd>CTRL</kbd> + <kbd>L</kbd> to clear network logs
+5. Click <kbd>CTRL</kbd> + <kbd>R</kbd> to refresh page
+6. Click on `image-fx` which should be at top
+7. Goto <kbd>Request Headers</kbd> section and copy all the content of <kbd>Cookie</kbd>
 
 </details>
 
 <details>
-<summary>How to obtain authentication token?</summary>
+<summary style="font-weight: bold;font-size:15px;">ImageFX not available in your country?</summary>
 
-1. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
-2. Press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>I</kbd> to open console
-3. Paste the following code into console
-```js
-let script = document.querySelector("#__NEXT_DATA__");
-let obj = JSON.parse(script.textContent);
-let authToken = obj["props"]["pageProps"]["session"]["access_token"];
-
-window.prompt("Copy the auth token: ", authToken);
-```
-4. Copy the content from the prompt box.
-
+1. Install a free VPN (Windscribe, Proton, etc)
+2. Open [labs.google](https://labs.google/fx/tools/image-fx) and login
+3. From here follow the "How to extract cookie?" in [HELP](#help) section (above).
+4. Once you have obtained this cookie, you don't need VPN anymore.
 </details>
 
 <details>
-<summary>ImageFX not available on your region?</summary>
+<summary style="font-weight: bold;font-size:15px;">Not able to generate images?</summary>
 
-1. Connect to a VPN with US regions
-2. Login to [labs.google](https://labs.google/fx/tools/image-fx)
-3. Follow above guide to extract the **Authentication Token** and not the cookies.
+Create an issue [here](/issues). Make sure the pasted logs don't contain cookie or tokens.
 </details>
 
 ## Contributions
-Contribution are welcome but ensure to pass all test cases and follow existing coding standard. 
+Contribution are welcome but ensure to pass all test cases and follow existing coding standard.
 
 ## Desclaimer
 This project demonstrates usage of Google's private API but is not affiliated with Google. Use at your own risk.
