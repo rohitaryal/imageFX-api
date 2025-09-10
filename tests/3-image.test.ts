@@ -1,4 +1,4 @@
-import { ImageFX } from "..";
+import { ImageFX } from "../src/index";
 import { test, expect } from "bun:test";
 
 const GOOGLE_COOKIE = process.env.GOOGLE_COOKIE;
