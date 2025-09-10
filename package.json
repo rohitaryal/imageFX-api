@@ -2,11 +2,11 @@
   "name": "@rohitaryal/imagefx-api",
   "version": "2.0.0",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/ImageFX.js",
+  "types": "./dist/ImageFX.d.ts",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/index.js"
+    "import": "./dist/ImageFX.js",
+    "require": "./dist/ImageFX.js"
   },
   "bin": {
     "imagefx": "./dist/cli.js"
@@ -23,6 +23,7 @@
     "@types/yargs": "^17.0.33"
   },
   "dependencies": {
+    "typescript": "^5.9.2",
     "yargs": "^18.0.0"
   }
 }
