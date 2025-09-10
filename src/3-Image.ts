@@ -47,6 +47,8 @@ export default class Image {
             }
 
             writeFileSync(filePath, this.encodedImage, "base64");
+
+            return filePath;
         } catch (error) {
             throw new ImageError("Failed to save image: " + (error instanceof Error ? error.message : "UNKNOWN ERROR"));
         }
