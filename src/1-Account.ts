@@ -1,3 +1,4 @@
+import { DefaultHeader } from "./Constants";
 import { SessionData, User } from "./Types";
 
 export class AccountError extends Error {
@@ -99,12 +100,12 @@ export class Account {
         }
 
         return {
+            ...DefaultHeader,
             "Cookie": this.cookie,
             "Authorization": "Bearer " + this.token
         }
     }
 
-    // TODO: Add cookie/auth header to fetch
     private async fetchSession() {
         if (!this.cookie)
             throw new AccountError("Cookie field is missing");
@@ -114,7 +115,7 @@ export class Account {
 
         try {
             response = await fetch("https://labs.google/fx/api/auth/session", {
-                headers: new Headers(this.header()),
+                headers: this.header(),
             });
 
             if (!response.ok) {
