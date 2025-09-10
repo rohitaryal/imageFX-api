@@ -23,12 +23,13 @@ export class Account {
 
     // Re-Generate authorization token
     public async refreshSession() {
-        if (!this.cookie) {
+        if (!this.cookie)
             throw new AccountError("Cookie field is missing");
-        }
+
+        let sessionResult: SessionData | undefined;
 
         try {
-            const sessionResult = await this.fetchSession();
+            sessionResult = await this.fetchSession();
 
             if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user)
                 throw new AccountError("Session response is missing some fields")
@@ -92,11 +93,7 @@ export class Account {
     }
 
     // Returns object that can be used as header for auth
-    public async header() {
-        if (this.isTokenExpired()) {
-            await this.refreshSession()
-        }
-
+    public header() {
         if (!this.cookie || !this.token) {
             throw new AccountError("Cookie or Token is still missing after refresh");
         }
@@ -109,14 +106,19 @@ export class Account {
 
     // TODO: Add cookie/auth header to fetch
     private async fetchSession() {
+        if (!this.cookie)
+            throw new AccountError("Cookie field is missing");
+
         let response: Response | undefined;
         let parsedResponse: any | undefined;
 
         try {
-            response = await fetch("https://labs.google/fx/api/auth/session");
+            response = await fetch("https://labs.google/fx/api/auth/session", {
+                headers: new Headers(this.header()),
+            });
 
             if (!response.ok) {
-                throw new AccountError("Server didn't send any session details: " + (await response.text()))
+                throw new AccountError(`[Status: ${response.status} ${response.statusText}]` + "Server didn't send any session details: " + (await response.text()))
             }
         } catch (err) {
             if (err instanceof AccountError) {
