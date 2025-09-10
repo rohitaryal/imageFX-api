@@ -9,10 +9,12 @@ export default class ImageFx {
         this.account = new Account(cookie);
     }
 
-    public generateImage(prompt: string | Prompt, retries = 0) {
+    public async generateImage(prompt: string | Prompt, retries = 0) {
         if (typeof prompt === "string") {
             prompt = new Prompt({ prompt });
         }
+        
+        await this.account.getToken();
 
         return prompt.generate(retries);
     }
