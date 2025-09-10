@@ -2,8 +2,6 @@ name: "Test and release to NPM.JS"
 
 on:
     push:
-        branches:
-            - "upgrade"
         tags:
             - "v*"
 
