@@ -9,11 +9,11 @@ export class PromptError extends Error {
 }
 
 export class Prompt {
-    private seed: number;
-    private prompt: string;
-    private numberOfImages: number;
-    private aspectRatio: AspectRatio;
-    private generationModel: Model;
+    seed: number;
+    prompt: string;
+    numberOfImages: number;
+    aspectRatio: AspectRatio;
+    generationModel: Model;
 
     constructor(args: PromptArg) {
         this.seed = args.seed ?? 0;
