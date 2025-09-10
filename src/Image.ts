@@ -1,7 +1,7 @@
+import { join } from "path";
 import { AspectRatio, Model } from "./Constants";
 import { ImageArg } from "./Types";
-import { writeFileSync } from "fs";
-import { extname } from "path";
+import { existsSync, mkdirSync, writeFileSync, } from "fs";
 
 export class ImageError extends Error {
     constructor(message: string) {
@@ -37,14 +37,21 @@ export class Image {
         this.fingerprintId = args.fingerprintLogRecordId;
     }
 
-    public save(filePath?: string) {
-        try {
-            if (!filePath) {
-                filePath = `image-${Date.now()}.png`;
-            } else if (!extname(filePath)) {
-                filePath += ".png";
-            }
+    public save(filePath = ".") {
+        const imageName = `image-${Date.now()}.png`;
 
+        if (!existsSync(filePath)) {
+            console.log("[*] Creating destination dir:", filePath)
+
+            try {
+                mkdirSync(filePath, { recursive: true });
+            } catch (err) {
+                throw new ImageError(`Failed to create directory ${filePath}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            }
+        }
+
+        try {
+            filePath = join(filePath, imageName);
             writeFileSync(filePath, this.encodedImage, "base64");
 
             return filePath;
