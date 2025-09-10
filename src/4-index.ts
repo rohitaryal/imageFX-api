@@ -27,7 +27,6 @@ export default class ImageFX {
      * 
      * @param prompt Description of image
      * @param retries Number of retries
-     * @returns 
      */
     public async generateImage(prompt: string | Prompt, retries = 0) {
         if (typeof prompt === "string") {
