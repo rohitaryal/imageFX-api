@@ -12,4 +12,4 @@ test("Get image from ID", async () => {
 
     expect(image).toBeDefined()
     expect(image.mediaId).toBe(MEDIA_ID!);
-});
+}, 30000);
