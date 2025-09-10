@@ -57,7 +57,11 @@ export class Account {
             throw new AccountError("Cookie or Token is still missing after refresh");
         }
 
-        return new Headers()
+        return new Headers({
+            ...DefaultHeader,
+            "Cookie": this.cookie,
+            "Authorization": "Bearer " + this.token,
+        })
     }
 
     /**

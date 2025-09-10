@@ -1,6 +1,6 @@
 import { Account } from "./Account";
 import { Prompt } from "./Prompt";
-import Image from "./Image";
+import { Image } from "./Image";
 import { ImageArg } from "./Types";
 
 export class ImageFXError extends Error {
@@ -10,7 +10,7 @@ export class ImageFXError extends Error {
     }
 }
 
-export default class ImageFX {
+export class ImageFX {
     private readonly account: Account;
 
     constructor(cookie: string) {

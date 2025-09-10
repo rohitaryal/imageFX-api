@@ -10,7 +10,7 @@ export class ImageError extends Error {
     }
 }
 
-export default class Image {
+export class Image {
     public readonly seed: number;
     public readonly model: Model; // modelNameType
     public readonly prompt: string;
