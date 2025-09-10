@@ -1,5 +1,4 @@
 import { AspectRatio, Model } from "./Constants";
-import { Prompt } from "./2-Prompt";
 import { ImageArg } from "./Types";
 import { writeFileSync } from "fs";
 import { extname } from "path";
