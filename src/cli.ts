@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
 import { AspectRatio, Model } from "./Constants";
@@ -8,9 +9,8 @@ const y = yargs();
 
 await y
     .scriptName("ImageFX")
-    .usage("$0 [options]", "Generate images for free using Google's ImageFX")
     .command(
-        "generate [options]",
+        "generate",
         "Generate new images",
         (yargs) => {
             return yargs
@@ -18,7 +18,6 @@ await y
                     alias: "p",
                     describe: "Textual description of image to be generated",
                     type: "string",
-                    default: "A vibe image designer who forgot to give prompt to AI"
                 })
                 .option("model", {
                     alias: "m",
@@ -70,6 +69,11 @@ await y
                 console.log("Cookie value is missing :(")
                 return;
             }
+
+            if (!argv.prompt) {
+                argv.prompt = "A prompt engineer who forgets to give prompt to AI";
+            }
+
             const fx = new ImageFX(argv.cookie);
             const prompt = new Prompt({
                 seed: argv.seed,
@@ -79,11 +83,12 @@ await y
                 aspectRatio: ("IMAGE_ASPECT_RATIO_" + argv.size) as AspectRatio,
             });
 
+            console.log("[*] Generating. Please wait...");
+
             const generatedImages = await fx.generateImage(prompt, argv.retry);
             generatedImages.forEach((image, index) => {
                 try {
-                    const fileName = `image-${Date.now()}-${index}.png`;
-                    const savedPath = image.save(argv.dir ? `${argv.dir}/${fileName}` : fileName);
+                    const savedPath = image.save(argv.dir);
                     console.log("[+] Image saved at:", savedPath);
                 } catch (error) {
                     console.log("[!] Failed to save an image:", error);
@@ -115,16 +120,6 @@ await y
                 })
         },
         async (argv) => {
-            if (!argv.cookie) {
-                console.log("Cookie value is missing :(")
-                return;
-            }
-
-            if (!argv.mediaId) {
-                console.log("Media ID is missing :(");
-                return;
-            }
-
             const fx = new ImageFX(argv.cookie);
             const fetchedImage = await fx.getImageFromId(argv.mediaId);
 
@@ -140,4 +135,5 @@ await y
     .wrap(Math.min(y.terminalWidth(), 150))
     .help()
     .alias("help", "h")
+    .showHelpOnFail(true)
     .parse(hideBin(process.argv));
