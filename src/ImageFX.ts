@@ -35,6 +35,10 @@ export class ImageFX {
             prompt = new Prompt({ prompt });
         }
 
+        if (!(prompt instanceof Prompt)) {
+            throw new ImageFXError("Provided prompt is not an instance of Prompt")
+        }
+
         await this.account.refreshSession()
 
         const generatedImages = await this.fetchImages(prompt, retries);
