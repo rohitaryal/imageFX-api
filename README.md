@@ -1,7 +1,7 @@
 # imageFX-api (imagen)
 Unofficial free reverse engineered api for imageFX(imagen) service provided by [labs.google](https://labs.google)
 
-![Banner](./assets/banner.png)
+![Banner](https://github.com/rohitaryal/imageFX-api/blob/upgrade/assets/banner.png?raw=true)
 
 ## Installation
 ```bash
@@ -9,7 +9,7 @@ npm i -g @rohitaryal/imagefx-api
 ```
 
 ## Usage
-`imagefx` can be invoked through both command line and module.
+`imagefx` can be invoked through both command line and as a module.
 <details>
 <summary style="font-weight: bold;font-size:15px;">Command Line</summary>
 
