@@ -11,7 +11,6 @@ jobs:
     test:
         name: Run bun test
         runs-on: ubuntu-latest
-        if: startsWith(github.ref, 'refs/heads/upgrade')
         
         env:
             MEDIA_ID: ${{ secrets.MEDIA_ID }}
