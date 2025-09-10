@@ -9,13 +9,13 @@ export class AccountError extends Error {
 }
 
 export class Account {
-    private user?: User;
-    private token?: string;
+    public user?: User;
+    public token?: string;
     private tokenExpiry?: Date;
-    private cookie: string;
+    private readonly cookie: string;
 
     constructor(cookie: string) {
-        if (!cookie || !cookie.trim()) {
+        if (!cookie?.trim()) {
             throw new AccountError("Cookie is required and cannot be empty");
         }
 
@@ -24,30 +24,14 @@ export class Account {
 
     // Re-Generate authorization token
     public async refreshSession() {
-        if (!this.cookie)
-            throw new AccountError("Cookie field is missing");
+        let sessionResult = await this.fetchSession();
 
-        let sessionResult: SessionData | undefined;
+        if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user)
+            throw new AccountError("Session response is missing some fields" + sessionResult)
 
-        try {
-            sessionResult = await this.fetchSession();
-
-            if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user)
-                throw new AccountError("Session response is missing some fields")
-
-            this.token = sessionResult.access_token;
-            this.tokenExpiry = new Date(sessionResult.expires);
-            this.user = sessionResult.user;
-        } catch (err) {
-            if (err instanceof AccountError) {
-                throw err;
-            }
-
-            throw new AccountError(
-                "Failed to refresh session info: " +
-                ((err instanceof Error) ? err.message : "NETWORK_ERROR")
-            )
-        }
+        this.user = sessionResult.user;
+        this.token = sessionResult.access_token;
+        this.tokenExpiry = new Date(sessionResult.expires);
     }
 
     // Compare current date with token expiry date
@@ -58,44 +42,9 @@ export class Account {
         return this.tokenExpiry <= new Date(Date.now() - 30 * 1000);
     }
 
-    // Get authorization token
-    public async getToken() {
-        if (this.isTokenExpired()) {
-            await this.refreshSession()
-        }
-
-        if (!this.token) {
-            throw new AccountError("No valid token available");
-        }
-
-        return this.token;
-    }
-
-    // Returns this.user
-    public async getUserInfo() {
-        if (!this.user) {
-            await this.refreshSession()
-        }
-
-        // Preety much redundant
-        if (!this.user) {
-            throw new AccountError("Failed to get user details")
-        }
-
-        return this.user;
-    }
-
-    // Overwrite account fields thus clearing session
-    public clear() {
-        this.cookie = "";
-        this.user = undefined;
-        this.token = undefined;
-        this.tokenExpiry = undefined;
-    }
-
     // Returns object that can be used as header for auth
-    public header() {
-        if (!this.cookie || !this.token) {
+    public getAuthHeaders() {
+        if (!this.token) {
             throw new AccountError("Cookie or Token is still missing after refresh");
         }
 
@@ -106,38 +55,25 @@ export class Account {
         }
     }
 
+    // Internal fetch
     private async fetchSession() {
-        if (!this.cookie)
-            throw new AccountError("Cookie field is missing");
+        const response = await fetch("https://labs.google/fx/api/auth/session", {
+            headers: { ...DefaultHeader, "Cookie": this.cookie }
+        });
 
-        let response: Response | undefined;
-        let parsedResponse: any | undefined;
-
-        try {
-            response = await fetch("https://labs.google/fx/api/auth/session", {
-                headers: this.header(),
-            });
-
-            if (!response.ok) {
-                throw new AccountError(`[Status: ${response.status} ${response.statusText}]` + "Server didn't send any session details: " + (await response.text()))
-            }
-        } catch (err) {
-            if (err instanceof AccountError) {
-                throw err;
-            }
-
+        if (!response.ok) {
+            const errorText = await response.text();
             throw new AccountError(
-                "Failed to fetch session details: " +
-                (err instanceof Error ? err.message : "NETWORK ERROR")
+                `Authentication failed (${response.status}): ${errorText}`
             );
         }
 
-        try {
-            parsedResponse = await response.json();
-        } catch (err) {
-            throw new AccountError("Failed to parse non-JSON session response: " + (await response.text()))
+        const sessionData = await response.json() as SessionData;
+
+        if (!sessionData.access_token || !sessionData.expires || !sessionData.user) {
+            throw new AccountError("Invalid session response: missing required fields");
         }
 
-        return parsedResponse as SessionData;
+        return sessionData;
     }
 }
