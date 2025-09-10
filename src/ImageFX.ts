@@ -10,7 +10,6 @@ export class ImageFXError extends Error {
     }
 }
 
-// TODO: Complete this
 export default class ImageFX {
     private readonly account: Account;
 
