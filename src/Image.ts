@@ -40,10 +40,9 @@ export default class Image {
     public save(filePath?: string) {
         try {
             if (!filePath) {
-
                 filePath = `image-${Date.now()}.png`;
             } else if (!extname(filePath)) {
-                filePath += "png";
+                filePath += ".png";
             }
 
             writeFileSync(filePath, this.encodedImage, "base64");
