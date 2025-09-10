@@ -28,8 +28,8 @@ export class Account {
     public async refreshSession() {
         let sessionResult = await this.fetchSession();
 
-        if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user) {
-            throw new AccountError("Session response is missing some fields" + sessionResult)
+        if (!sessionResult || !sessionResult.access_token || !sessionResult.expires || !sessionResult.user) {
+            throw new AccountError("Session response is missing some fields: \n" + JSON.stringify(sessionResult))
         }
 
         this.user = sessionResult.user;
