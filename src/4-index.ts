@@ -96,8 +96,8 @@ export default class ImageFX {
         try {
             const response = await fetch("https://aisandbox-pa.googleapis.com/v1:runImageFx", {
                 method: "POST",
+                body: prompt.toString(),
                 headers: this.account.getAuthHeaders(),
-                body: prompt.toString()
             });
 
             if (!response.ok) {
