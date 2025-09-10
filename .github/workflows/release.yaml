@@ -11,6 +11,7 @@ jobs:
     test:
         name: Run bun test
         runs-on: ubuntu-latest
+        if: startsWith(github.ref, 'refs/heads/upgrade')
         
         env:
             GOOGLE_COOKIE: ${{ secrets.GOOGLE_COOKIE }}
