@@ -22,7 +22,9 @@ export class Account {
         this.cookie = cookie;
     }
 
-    // Re-Generate authorization token
+    /**
+     * Re-generates and updates authorization token
+     */
     public async refreshSession() {
         let sessionResult = await this.fetchSession();
 
@@ -34,7 +36,9 @@ export class Account {
         this.tokenExpiry = new Date(sessionResult.expires);
     }
 
-    // Compare current date with token expiry date
+    /**
+     * Check if current authorization token is expired (buffer: 30s)
+     */
     public isTokenExpired() {
         if (!this.token || !this.tokenExpiry)
             return true;
@@ -42,20 +46,25 @@ export class Account {
         return this.tokenExpiry <= new Date(Date.now() - 30 * 1000);
     }
 
-    // Returns object that can be used as header for auth
+    /**
+     * Returns headers object for authenticated requests.
+     * You might not need this ever.
+     */
     public getAuthHeaders() {
         if (!this.token) {
             throw new AccountError("Cookie or Token is still missing after refresh");
         }
 
-        return {
+        return new Headers({
             ...DefaultHeader,
             "Cookie": this.cookie,
             "Authorization": "Bearer " + this.token
-        }
+        })
     }
 
-    // Internal fetch
+    /**
+     * Fetches session update request's json from labs.google
+     */
     private async fetchSession() {
         const response = await fetch("https://labs.google/fx/api/auth/session", {
             headers: { ...DefaultHeader, "Cookie": this.cookie }
