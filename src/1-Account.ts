@@ -23,6 +23,10 @@ export class Account {
 
     // Re-Generate authorization token
     public async refreshSession() {
+        if (!this.cookie) {
+            throw new AccountError("Cookie field is missing");
+        }
+
         try {
             const sessionResult = await this.fetchSession();
 
