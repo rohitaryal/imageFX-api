@@ -1,6 +1,6 @@
-import { Account } from "./1-Account";
-import { Prompt } from "./2-Prompt";
-import Image from "./3-Image";
+import { Account } from "./Account";
+import { Prompt } from "./Prompt";
+import Image from "./Image";
 import { ImageArg } from "./Types";
 
 export class ImageFXError extends Error {

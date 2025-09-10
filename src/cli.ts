@@ -2,7 +2,7 @@ import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
 import { AspectRatio, Model } from "./Constants";
 import ImageFx from "./4-index";
-import { Prompt } from "./2-Prompt";
+import { Prompt } from "./Prompt";
 
 const y = yargs();
 
