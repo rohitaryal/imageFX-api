@@ -2,7 +2,7 @@ import { AspectRatio, Model } from "./Constants";
 import { PromptArg } from "./Types";
 
 export class PromptError extends Error {
-    constructor(message: string, code?: string) {
+    constructor(message: string) {
         super(message);
         this.name = 'PromptError';
     }
