@@ -1,7 +1,7 @@
-import { Account } from "./Account";
-import { Prompt } from "./Prompt";
-import { Image } from "./Image";
-import { ImageArg } from "./Types";
+import { Account } from "./Account.js";
+import { Prompt } from "./Prompt.js";
+import { Image } from "./Image.js";
+import { ImageArg } from "./Types.js";
 
 export class ImageFXError extends Error {
     constructor(message: string) {

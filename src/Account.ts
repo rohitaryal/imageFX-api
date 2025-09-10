@@ -1,5 +1,5 @@
-import { DefaultHeader } from "./Constants";
-import { SessionData, User } from "./Types";
+import { DefaultHeader } from "./Constants.js";
+import { SessionData, User } from "./Types.js";
 
 export class AccountError extends Error {
     constructor(message: string, public readonly code?: string) {

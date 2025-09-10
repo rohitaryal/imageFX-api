@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
-import { AspectRatio, Model } from "./Constants";
-import { ImageFX } from "./ImageFX";
-import { Prompt } from "./Prompt";
+import { AspectRatio, Model } from "./Constants.js";
+import { ImageFX } from "./ImageFX.js";
+import { Prompt } from "./Prompt.js";
 
 const y = yargs();
 

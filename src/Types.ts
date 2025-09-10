@@ -1,4 +1,4 @@
-import { AspectRatio, Model } from "./Constants";
+import { AspectRatio, Model } from "./Constants.js";
 
 export interface PromptArg {
     seed?: number;

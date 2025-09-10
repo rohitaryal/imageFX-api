@@ -1,6 +1,6 @@
 import { join } from "path";
-import { AspectRatio, Model } from "./Constants";
-import { ImageArg } from "./Types";
+import { AspectRatio, Model } from "./Constants.js";
+import { ImageArg } from "./Types.js";
 import { existsSync, mkdirSync, writeFileSync, } from "fs";
 
 export class ImageError extends Error {

@@ -1,5 +1,5 @@
-import { AspectRatio, Model } from "./Constants";
-import { PromptArg } from "./Types";
+import { AspectRatio, Model } from "./Constants.js";
+import { PromptArg } from "./Types.js";
 
 export class PromptError extends Error {
     constructor(message: string) {
