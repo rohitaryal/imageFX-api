@@ -80,6 +80,14 @@ await y
             });
 
             const generatedImages = await fx.generateImage(prompt, argv.retry);
+            generatedImages.forEach(image => {
+                try {
+                    const savedPath = image.save(argv.dir)
+                    console.log("[+] Image saved at:", savedPath);
+                } catch (error) {
+                    console.log("[!] Failed to save an image:", error);
+                }
+            })
         }
     )
     .command(
@@ -92,6 +100,12 @@ await y
                     type: "string",
                     demandOption: true,
                 })
+                .option("dir", {
+                    alias: "d",
+                    describe: "Directory to save generated images",
+                    default: ".",
+                    type: "string",
+                })
                 .option("cookie", {
                     alias: "c",
                     describe: "Google account cookie",
@@ -99,8 +113,26 @@ await y
                     demandOption: true,
                 })
         },
-        (args) => {
-            console.log(args)
+        async (argv) => {
+            if (!argv.cookie) {
+                console.log("Cookie value is missing :(")
+                return;
+            }
+
+            if (!argv.mediaId) {
+                console.log("Media ID is missing :(");
+                return;
+            }
+
+            const fx = new ImageFx(argv.cookie);
+            const fetchedImage = await fx.getImageFromId(argv.mediaId);
+
+            try {
+                const savedPath = fetchedImage.save(argv.dir);
+                console.log("[+] Image saved at:", savedPath)
+            } catch (error) {
+                console.log("[!] Failed to save an image:", error)
+            }
         }
     )
     .demandCommand(1, "You need to use at least one command")
