@@ -1,13 +1,13 @@
 import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
 import { AspectRatio, Model } from "./Constants";
-import ImageFx from "./ImageFX";
+import { ImageFX } from "./ImageFX";
 import { Prompt } from "./Prompt";
 
 const y = yargs();
 
 await y
-    .scriptName("imagefx")
+    .scriptName("ImageFX")
     .usage("$0 [options]", "Generate images for free using Google's ImageFX")
     .command(
         "generate [options]",
@@ -70,7 +70,7 @@ await y
                 console.log("Cookie value is missing :(")
                 return;
             }
-            const fx = new ImageFx(argv.cookie);
+            const fx = new ImageFX(argv.cookie);
             const prompt = new Prompt({
                 seed: argv.seed,
                 prompt: argv.prompt,
@@ -125,7 +125,7 @@ await y
                 return;
             }
 
-            const fx = new ImageFx(argv.cookie);
+            const fx = new ImageFX(argv.cookie);
             const fetchedImage = await fx.getImageFromId(argv.mediaId);
 
             try {
