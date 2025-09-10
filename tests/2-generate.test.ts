@@ -6,56 +6,56 @@ if (!GOOGLE_COOKIE) process.exit(1);
 
 const fx = new ImageFX(GOOGLE_COOKIE);
 
-// describe("Different Models", () => {
-//     Object.values(Model).forEach(model => {
-//         const prompt = new Prompt({
-//             prompt: "A superhuman flying over mars",
-//             generationModel: model,
-//         });
+describe("Different Models", () => {
+    Object.values(Model).forEach(model => {
+        const prompt = new Prompt({
+            prompt: "A superhuman flying over mars",
+            generationModel: model,
+        });
 
-//         test("Selected Model: " + model, async () => {
-//             prompt.generationModel = model;
+        test("Selected Model: " + model, async () => {
+            prompt.generationModel = model;
 
-//             const generatedImages = await fx.generateImage(prompt);
+            const generatedImages = await fx.generateImage(prompt);
 
-//             expect(generatedImages).toBeDefined();
-//             expect(generatedImages.length).toBeGreaterThan(0);
-//             expect(generatedImages[0].model).toBe(model);
-//         }, 30000);
-//     })
-// });
+            expect(generatedImages).toBeDefined();
+            expect(generatedImages.length).toBeGreaterThan(0);
+            expect(generatedImages[0].model).toBe(model);
+        }, 30000);
+    })
+});
 
-// describe("Aspect Ratios", () => {
-//     Object.values(AspectRatio).forEach(size => {
-//         test("Selected size: " + size, async () => {
-//             const prompt = new Prompt({
-//                 aspectRatio: size,
-//                 prompt: "A friend forcing me to write code all the time",
-//             });
+describe("Aspect Ratios", () => {
+    Object.values(AspectRatio).forEach(size => {
+        test("Selected size: " + size, async () => {
+            const prompt = new Prompt({
+                aspectRatio: size,
+                prompt: "A friend forcing me to write code all the time",
+            });
 
-//             const generatedImages = await fx.generateImage(prompt);
+            const generatedImages = await fx.generateImage(prompt);
 
-//             expect(generatedImages).toBeDefined();
-//             expect(generatedImages.length).toBeGreaterThan(0);
-//             expect(generatedImages[0].aspectRatio).toBe(size);
-//         }, 30000);
-//     })
-// });
+            expect(generatedImages).toBeDefined();
+            expect(generatedImages.length).toBeGreaterThan(0);
+            expect(generatedImages[0].aspectRatio).toBe(size);
+        }, 30000);
+    })
+});
 
-// test("Image Seed", async () => {
-//     const seed = 1233;
+test("Image Seed", async () => {
+    const seed = 1233;
 
-//     const prompt = new Prompt({
-//         seed,
-//         prompt: "A crocodile eating an ice",
-//     });
+    const prompt = new Prompt({
+        seed,
+        prompt: "A crocodile eating an ice",
+    });
 
-//     const generatedImages = await fx.generateImage(prompt);
+    const generatedImages = await fx.generateImage(prompt);
 
-//     expect(generatedImages).toBeDefined();
-//     expect(generatedImages.length).toBeGreaterThan(0);
-//     expect(generatedImages[0].seed).toBe(seed);
-// }, 30000);
+    expect(generatedImages).toBeDefined();
+    expect(generatedImages.length).toBeGreaterThan(0);
+    expect(generatedImages[0].seed).toBe(seed);
+}, 30000);
 
 test("Multiple Parameters", async () => {
     const prompt = new Prompt({
