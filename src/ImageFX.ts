@@ -29,6 +29,9 @@ export class ImageFX {
      */
     public async generateImage(prompt: string | Prompt, retries = 0) {
         if (typeof prompt === "string") {
+            if (!prompt.trim()) {
+                throw new ImageFXError("Prompt cannot be empty")
+            }
             prompt = new Prompt({ prompt });
         }
 
