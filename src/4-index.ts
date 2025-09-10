@@ -1,54 +1,135 @@
 import { Account } from "./1-Account";
 import { Prompt } from "./2-Prompt";
+import Image from "./3-Image";
+import { ImageArg } from "./Types";
+
+export class ImageFXError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ImageFXError";
+    }
+}
 
 // TODO: Complete this
-export default class ImageFx {
+export default class ImageFX {
     private readonly account: Account;
 
     constructor(cookie: string) {
+        if (!cookie?.trim()) {
+            throw new ImageFXError("Cookie is required and cannot be empty");
+        }
+
         this.account = new Account(cookie);
     }
 
+    /**
+     * Generates image from a given prompt
+     * 
+     * @param prompt Description of image
+     * @param retries Number of retries
+     * @returns 
+     */
     public async generateImage(prompt: string | Prompt, retries = 0) {
         if (typeof prompt === "string") {
             prompt = new Prompt({ prompt });
         }
-        
-        await this.account.getToken();
 
-        return prompt.generate(retries);
+        await this.account.refreshSession()
+
+        const generatedImages = await this.fetchImages(prompt, retries);
+        return generatedImages.map((data: ImageArg) => new Image(data));
     }
 
-    // TODO: Add cookie/auth headers in fetch
+    /**
+     * Gets generated image from its unique media ID
+     * @param id Unique media id for a generated image
+     */
     public async getImageFromId(id: string) {
-        let response: Response | undefined;
-        let parsedResponse: any | undefined;
-        const url = "https://labs.google/fx/api/trpc/media.fetchMedia?input=" + JSON.stringify({ "json": { "mediaKey": id } });
+        if (!id?.trim()) {
+            throw new ImageFXError("Image ID is required and cannot be empty");
+        }
+
+        await this.account.refreshSession();
+
+        const url = "https://labs.google/fx/api/trpc/media.fetchMedia";
+        const params = encodeURIComponent(
+            JSON.stringify({ json: { mediaKey: id } })
+        );
 
         try {
-            response = await fetch(url);
+            const response = await fetch(`${url}?input=${params}`, {
+                headers: this.account.getAuthHeaders(),
+            });
+
             if (!response.ok) {
-                throw new Error("Server responded with unexpected response: " + (await response.text()))
+                const errorText = await response.text();
+                throw new ImageFXError(`Server responded with unexpected response (${response.status}): ${errorText}`);
             }
-        } catch (err) {
-            throw err; // Maybe do smth here
-        }
 
+            const parsedResponse = await response.json();
+            const requestedImage = parsedResponse?.result?.data?.json?.result?.image;
+
+            if (!requestedImage) {
+                throw new ImageFXError("Server responded with empty image");
+            }
+
+            delete requestedImage.mediaVisibility;
+            delete requestedImage.previousMediaGenerationId;
+
+            return new Image(requestedImage);
+        } catch (error) {
+            if (error instanceof ImageFXError) {
+                throw error;
+            }
+
+            throw new ImageFXError(`Failed to fetch image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+
+    /**
+     * Fetches generated images from Google ImageFX API
+     *
+     * @param retry Number of retries
+     */
+    private async fetchImages(prompt: Prompt, retry = 0): Promise<ImageArg[]> {
         try {
-            parsedResponse = await response.json();
-        } catch (err) {
-            throw err; // Here too
+            const response = await fetch("https://aisandbox-pa.googleapis.com/v1:runImageFx", {
+                method: "POST",
+                headers: this.account.getAuthHeaders(),
+                body: prompt.toString()
+            });
+
+            if (!response.ok) {
+                if (retry > 0) {
+                    console.log("[!] Failed to generate image. Retrying...");
+                    return this.fetchImages(prompt, retry - 1);
+                }
+
+                const errorText = await response.text();
+                throw new ImageFXError(`Server responded with invalid response (${response.status}): ${errorText}`);
+            }
+
+            const jsonResponse = await response.json();
+            const generatedImages: ImageArg[] | undefined = jsonResponse?.imagePanels?.[0]?.generatedImages;
+
+            if (!generatedImages) {
+                throw new ImageFXError("Server responded with empty images");
+            }
+
+            return generatedImages;
+
+        } catch (error) {
+            if (retry > 0) {
+                console.log("[!] Failed to generate image. Retrying...");
+                return this.fetchImages(prompt, retry - 1);
+            }
+
+            if (error instanceof ImageFXError) {
+                throw error;
+            }
+
+            throw new ImageFXError(`Failed to generate image: ${error instanceof Error ? error.message : 'Network error'}`);
         }
-
-        const requestedImage = parsedResponse?.result?.data?.json?.result?.image;
-
-        if (!requestedImage) {
-            throw new Error("Server responded with empty image");
-        }
-
-        delete requestedImage.mediaVisibility;
-        delete requestedImage.previousMediaGenerationId;
-
-        return new Image(requestedImage);
     }
 }
