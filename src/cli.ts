@@ -80,14 +80,15 @@ await y
             });
 
             const generatedImages = await fx.generateImage(prompt, argv.retry);
-            generatedImages.forEach(image => {
+            generatedImages.forEach((image, index) => {
                 try {
-                    const savedPath = image.save(argv.dir)
+                    const fileName = `image-${Date.now()}-${index}.png`;
+                    const savedPath = image.save(argv.dir ? `${argv.dir}/${fileName}` : fileName);
                     console.log("[+] Image saved at:", savedPath);
                 } catch (error) {
                     console.log("[!] Failed to save an image:", error);
                 }
-            })
+            });
         }
     )
     .command(
