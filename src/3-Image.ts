@@ -2,6 +2,14 @@ import { AspectRatio, Model } from "./Constants";
 import { Prompt } from "./2-Prompt";
 import { ImageArg } from "./Types";
 import { writeFileSync } from "fs";
+import { extname } from "path";
+
+export class ImageError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ImageError";
+    }
+}
 
 export default class Image {
     public readonly seed: number;
@@ -15,11 +23,14 @@ export default class Image {
     private readonly fingerprintId: string; // fingerprintLogRecordId
 
     constructor(args: ImageArg) {
+        if (!args.encodedImage?.trim()) {
+            throw new ImageError("Encoded image data is required");
+        }
+
         this.seed = args.seed;
         this.prompt = args.prompt;
         this.model = args.modelNameType;
         this.aspectRatio = args.aspectRatio;
-
         // Unrequired stuffs below :|
         this.workflowId = args.workflowId;
         this.encodedImage = args.encodedImage;
@@ -27,21 +38,18 @@ export default class Image {
         this.fingerprintId = args.fingerprintLogRecordId;
     }
 
-    public regenerate(retry = 0) {
-        const prompt = new Prompt({
-            prompt: this.prompt,
-            aspectRatio: this.aspectRatio,
-            generationModel: this.model,
-            numberOfImages: 1,
-            seed: this.seed,
-        });
+    public save(filePath?: string) {
+        try {
+            if (!filePath) {
 
-        return prompt.generate(retry);
-    }
+                filePath = `image-${Date.now()}.png`;
+            } else if (!extname(filePath)) {
+                filePath += "png";
+            }
 
-    // TODO: Add proper error handelling
-    public save(imageName?: string) {
-        imageName = imageName ?? `image-${Date.now()}`;
-        writeFileSync(imageName, this.encodedImage, "base64");
+            writeFileSync(filePath, this.encodedImage, "base64");
+        } catch (error) {
+            throw new ImageError("Failed to save image: " + (error instanceof Error ? error.message : "UNKNOWN ERROR"));
+        }
     }
 }
