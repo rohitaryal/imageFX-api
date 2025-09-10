@@ -16,11 +16,11 @@
   ],
   "scripts": {
     "build": "tsc && chmod +x ./dist/cli.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "bun test --bail"
   },
   "devDependencies": {
     "@types/bun": "^1.2.21",
-    "@types/node": "^24.3.0",
     "@types/yargs": "^17.0.33"
   },
   "dependencies": {
