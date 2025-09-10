@@ -1,4 +1,4 @@
-import yargs, { number } from "yargs";
+import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
 import { AspectRatio, Model } from "./Constants";
 import ImageFx from "./4-index";
