@@ -28,8 +28,9 @@ export class Account {
     public async refreshSession() {
         let sessionResult = await this.fetchSession();
 
-        if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user)
+        if (!sessionResult.access_token || !sessionResult.expires || !sessionResult.user) {
             throw new AccountError("Session response is missing some fields" + sessionResult)
+        }
 
         this.user = sessionResult.user;
         this.token = sessionResult.access_token;
@@ -40,8 +41,9 @@ export class Account {
      * Check if current authorization token is expired (buffer: 30s)
      */
     public isTokenExpired() {
-        if (!this.token || !this.tokenExpiry)
+        if (!this.token || !this.tokenExpiry) {
             return true;
+        }
 
         return this.tokenExpiry <= new Date(Date.now() - 30 * 1000);
     }
@@ -55,11 +57,7 @@ export class Account {
             throw new AccountError("Cookie or Token is still missing after refresh");
         }
 
-        return new Headers({
-            ...DefaultHeader,
-            "Cookie": this.cookie,
-            "Authorization": "Bearer " + this.token
-        })
+        return new Headers()
     }
 
     /**
