@@ -2,6 +2,8 @@ name: "Test and release to NPM.JS"
 
 on:
     push:
+        branches:
+            - "main"
         tags:
             - "v*"
 
@@ -45,7 +47,6 @@ jobs:
             - name: Install Dependencies
               run: |
                 bun install
-                bun i --save-dev @types/node
-            
+
             - name: Publish to NPM
               run: bun publish -p --access public
