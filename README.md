@@ -1,7 +1,7 @@
 # imageFX-api (imagen)
 Unofficial free reverse engineered api for imageFX(imagen) service provided by [labs.google](https://labs.google)
 
-![Banner](https://github.com/rohitaryal/imageFX-api/blob/upgrade/assets/banner.png?raw=true)
+![Banner](https://raw.githubusercontent.com/rohitaryal/imageFX-api/refs/heads/main/assets/banner.png)
 
 ## Installation
 ```bash
@@ -85,7 +85,7 @@ Options:
 - Basic image generation
 
     ```typescript
-    import ImageFx from "@rohitaryal/imagefx-api";
+    import { ImageFX } from "@rohitaryal/imagefx-api";
 
     const fx = new ImageFX(process.env.GOOGLE_COOKIE);
 
@@ -120,7 +120,7 @@ Options:
     });
     ```
 
-More examples are at: [/examples](/examples/)
+More examples are at: [/examples](https://github.com/rohitaryal/imageFX-api/tree/main/examples)
 </details>
 
 ## Help
@@ -156,7 +156,7 @@ More examples are at: [/examples](/examples/)
 <details>
 <summary style="font-weight: bold;font-size:15px;">Not able to generate images?</summary>
 
-Create an issue [here](/issues). Make sure the pasted logs don't contain cookie or tokens.
+Create an issue [here](https://github.com/rohitaryal/imageFX-api/issues). Make sure the pasted logs don't contain cookie or tokens.
 </details>
 
 ## Contributions
