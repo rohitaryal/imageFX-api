@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from 'yargs/helpers';
-import { AspectRatio, Model } from "./Constants.js";
+import { AspectRatio, ImageType, Model } from "./Constants.js";
 import { ImageFX } from "./ImageFX.js";
 import { Prompt } from "./Prompt.js";
 
@@ -94,6 +94,71 @@ await y
                     console.log("[!] Failed to save an image:", error);
                 }
             });
+
+            return;
+        }
+    )
+    .command(
+        "caption",
+        "Generate detailed caption(s) from image",
+        (yargs) => {
+            return yargs
+                .option("image", {
+                    alias: "i",
+                    describe: "Path to the image to be captioned",
+                    type: "string",
+                    demandOption: true,
+                })
+                .option("type", {
+                    alias: "t",
+                    describe: "Type of image (eg: png, jpeg, webp, etc)",
+                    type: "string",
+                    demandOption: true,
+                })
+                .option("count", {
+                    alias: "n",
+                    describe: "Number of captions to generate",
+                    type: "number",
+                    default: 1,
+                })
+                .option("cookie", {
+                    alias: "c",
+                    describe: "Google account cookie",
+                    type: "string",
+                    demandOption: true,
+                })
+        },
+        async (argv) => {
+            if (!argv.cookie) {
+                console.log("Cookie value is missing :(")
+                return;
+            }
+
+            if (!argv.image) {
+                console.log("Image is not provided");
+                return;
+            }
+
+            if (!(argv.type in ImageType)) {
+                console.log("Invalid image type provided, valid types are: \n" +
+                    Object.keys(ImageType).join(", "));
+                return;
+            }
+
+            const fx = new ImageFX(argv.cookie);
+
+            console.log("[*] Generating captions ...");
+
+            const generatedCaptions = await fx.generateCaptionsFromImage(argv.image,
+                argv.count,
+                ImageType[argv.type as keyof typeof ImageType] // Safe typecast ;)
+            );
+
+            generatedCaptions.forEach((caption, index) => {
+                console.log(`[${index + 1}] ${caption}`)
+            });
+
+            return;
         }
     )
     .command(
@@ -129,6 +194,8 @@ await y
             } catch (error) {
                 console.log("[!] Failed to save an image:", error)
             }
+
+            return;
         }
     )
     .demandCommand(1, "You need to use at least one command")
