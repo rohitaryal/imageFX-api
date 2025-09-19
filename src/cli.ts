@@ -150,8 +150,8 @@ await y
             console.log("[*] Generating captions ...");
 
             const generatedCaptions = await fx.generateCaptionsFromImage(argv.image,
+                ImageType[argv.type as keyof typeof ImageType], // Safe typecast ;)
                 argv.count,
-                ImageType[argv.type as keyof typeof ImageType] // Safe typecast ;)
             );
 
             generatedCaptions.forEach((caption, index) => {
