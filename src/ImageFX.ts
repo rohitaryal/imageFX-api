@@ -2,6 +2,8 @@ import { Account } from "./Account.js";
 import { Prompt } from "./Prompt.js";
 import { Image } from "./Image.js";
 import { ImageArg } from "./Types.js";
+import { existsSync, readFileSync } from "fs";
+import { ImageType } from "./Constants.js";
 
 export class ImageFXError extends Error {
     constructor(message: string) {
@@ -82,6 +84,76 @@ export class ImageFX {
             delete requestedImage.previousMediaGenerationId;
 
             return new Image(requestedImage);
+        } catch (error) {
+            if (error instanceof ImageFXError) {
+                throw error;
+            }
+
+            throw new ImageFXError(`Failed to fetch image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    /**
+     * Generate a detailed caption from an image.
+     * 
+     * @param imagePath Path to the image to be used
+     * @param count Number of captions to generate
+     * @param imageType Type of image (png, jpeg, yada yada)
+     * @returns Array with `count` number of captions (if you are lucky)
+     */
+    public async generateCaptionsFromImage(imagePath: string, count: number, imageType: ImageType) {
+        if (!existsSync(imagePath)) {
+            throw new ImageFXError("Image doesn't exist at path: " + imagePath);
+        }
+
+        let base64EncodedImage: string = "";
+
+        try {
+            base64EncodedImage = readFileSync(imagePath, "base64");
+            base64EncodedImage = `data:image/${imageType};base64,${base64EncodedImage}`;
+        } catch (error) {
+            throw new ImageFXError(`Failed to fetch image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+
+        await this.account.refreshSession();
+
+        const url = "https://labs.google/fx/api/trpc/backbone.captionImage";
+        const body = JSON.stringify({
+            "json": {
+                "clientContext": { "sessionId": ";1758297717089", "workflowId": "" },
+                "captionInput": {
+                    "candidatesCount": count,
+                    "mediaInput": {
+                        "mediaCategory": "MEDIA_CATEGORY_SUBJECT",
+                        "rawBytes": base64EncodedImage,
+                    }
+                }
+            }
+        });
+
+        let response: Response;
+
+        try {
+            response = await fetch(url, {
+                body,
+                method: "POST",
+                headers: this.account.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new ImageFXError(`Server responded with unexpected response (${response.status}): ${errorText}`);
+            }
+
+            const parsedResponse = await response.json();
+
+            const imageCaption: { output: string, mediaGenerationId: string }[] = parsedResponse?.result?.data?.json?.result?.candidates;
+
+            if (!imageCaption || imageCaption.length == 0) {
+                throw new ImageFXError("Image caption was not in the response: " + await response.text());
+            }
+
+            return imageCaption.map(caption => caption.output);
         } catch (error) {
             if (error instanceof ImageFXError) {
                 throw error;
