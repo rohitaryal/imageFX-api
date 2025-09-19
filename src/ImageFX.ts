@@ -101,7 +101,7 @@ export class ImageFX {
      * @param imageType Type of image (png, jpeg, yada yada)
      * @returns Array with `count` number of captions (if you are lucky)
      */
-    public async generateCaptionsFromImage(imagePath: string, count: number, imageType: ImageType) {
+    public async generateCaptionsFromImage(imagePath: string, imageType: ImageType, count: number = 1) {
         if (!existsSync(imagePath)) {
             throw new ImageFXError("Image doesn't exist at path: " + imagePath);
         }
