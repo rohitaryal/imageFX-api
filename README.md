@@ -47,6 +47,11 @@ Make sure you have:
     ```bash
     imagefx fetch "__MEDIA__ID__HERE__" --cookie $GOOGLE_COOKIE
     ```
+- Generating prompt/caption using an image as reference.
+    ```bash
+    # supported image types: jpeg, jpg, jpe, png, gif, webp, svg, bmp, tiff, apng, avif (not tested with all)
+    imagefx caption --image /path/to/img.webp --type WEBP --cookie $GOOGLE_COOKIE
+    ```
 Full generation help:
 ```text
 imagefx generate <options>
@@ -62,6 +67,19 @@ Options:
   -r, --retry       Number of retries if in case fetch fails
   -d, --dir         Directory to save generated images
   -c, --cookie      Google account cookie
+```
+
+Full caption generation help:
+```text
+Generate detailed caption(s) from image
+
+Options:
+  --version  Show version number
+  -h, --help     Show help
+  -i, --image    Path to the image to be captioned
+  -t, --type     Type of image (eg: png, jpeg, webp, etc)
+  -n, --count    Number of captions to generate
+  -c, --cookie   Google account cookie
 ```
 
 Full fetching help:
@@ -158,6 +176,11 @@ More examples are at: [/examples](https://github.com/rohitaryal/imageFX-api/tree
 
 Create an issue [here](https://github.com/rohitaryal/imageFX-api/issues). Make sure the pasted logs don't contain cookie or tokens.
 </details>
+
+## TODO
+- Write tests for caption generation
+- Write example usage for caption generation
+- Maybe add 'features' section in readme
 
 ## Contributions
 Contribution are welcome but ensure to pass all test cases and follow existing coding standard.
