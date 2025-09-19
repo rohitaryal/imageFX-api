@@ -178,7 +178,6 @@ Create an issue [here](https://github.com/rohitaryal/imageFX-api/issues). Make s
 </details>
 
 ## TODO
-- Write tests for caption generation
 - Maybe add 'features' section in readme
 
 ## Contributions
