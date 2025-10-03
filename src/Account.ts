@@ -8,10 +8,25 @@ export class AccountError extends Error {
     }
 }
 
+/**
+ * Represents user account
+ */
 export class Account {
+    /**
+     * Basic user account detail
+     */
     public user?: User;
+    /**
+     * Authentication token used for image generation
+     */
     public token?: string;
+    /**
+     * Expiry date for token (authentication token)
+     */
     private tokenExpiry?: Date;
+    /**
+     * User account cookie
+     */
     private readonly cookie: string;
 
     constructor(cookie: string) {
@@ -23,7 +38,7 @@ export class Account {
     }
 
     /**
-     * Re-generates and updates authorization token
+     * Re-generates and updates authorization token internally
      */
     public async refreshSession() {
         let sessionResult = await this.fetchSession();
@@ -39,6 +54,8 @@ export class Account {
 
     /**
      * Check if current authorization token is expired (buffer: 30s)
+     * 
+     * @returns Boolean representing if the token is expired
      */
     public isTokenExpired() {
         if (!this.token || !this.tokenExpiry) {
@@ -51,6 +68,8 @@ export class Account {
     /**
      * Returns headers object for authenticated requests.
      * You might not need this ever.
+     * 
+     * @returns Headers of course
      */
     public getAuthHeaders() {
         if (!this.token) {
@@ -66,6 +85,8 @@ export class Account {
 
     /**
      * Fetches session update request's json from labs.google
+     * 
+     * @returns Promise containing `SessionData` object which contains account session info.
      */
     private async fetchSession() {
         const response = await fetch("https://labs.google/fx/api/auth/session", {
