@@ -12,7 +12,13 @@ export class ImageFXError extends Error {
     }
 }
 
+/**
+ * Consider this the entry/main class
+ */
 export class ImageFX {
+    /**
+     * Represents user account and contains session info, cookies, etc
+     */
     private readonly account: Account;
 
     constructor(cookie: string) {
@@ -28,6 +34,7 @@ export class ImageFX {
      * 
      * @param prompt Description of image
      * @param retries Number of retries
+     * @returns List containing generated image(s)
      */
     public async generateImage(prompt: string | Prompt, retries = 0) {
         if (typeof prompt === "string") {
@@ -48,8 +55,9 @@ export class ImageFX {
     }
 
     /**
-     * Gets generated image from its unique media ID
+     * Gets generated image from its unique media ID (`image.mediaID`)
      * @param id Unique media id for a generated image
+     * @returns Returns image identified by its `id`
      */
     public async getImageFromId(id: string) {
         if (!id?.trim()) {
@@ -168,6 +176,7 @@ export class ImageFX {
      * Fetches generated images from Google ImageFX API
      *
      * @param retry Number of retries
+     * @returns Promise containing list of generated images.
      */
     private async fetchImages(prompt: Prompt, retry = 0): Promise<ImageArg[]> {
         try {
