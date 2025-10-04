@@ -8,6 +8,11 @@ Unofficial free reverse engineered api for imageFX(imagen) service provided by [
 npm i -g @rohitaryal/imagefx-api
 ```
 
+## Features
+1. Text to image using `IMAGEN_3/4`
+2. Image to text
+3. Command line support
+
 ## Usage
 `imagefx` can be invoked through both command line and as a module.
 <details>
@@ -17,40 +22,57 @@ Make sure you have:
 1. Installed `imagefx` globally ([How to install?](#installation))
 2. Obtained your google account cookies ([How to get cookies?](#help))
 3. Set env variable `GOOGLE_COOKIE` containing your cookie
+    
+    Bash:
     ```bash
     export GOOGLE_COOKIE="__YOUR__COOKIE__HERE__"
     ```
+    Command Prompt:
+    ```bat
+    set "GOOGLE_COOKIE=__YOUR__COOKIE__HERE__"
+    ```
+    Powershell:
+    ```ps
+    $GOOGLE_COOKIE = "__YOUR__GOOGLE__COOKIE__HERE__"
+    ```
 
 #### Basic Usages:
+
+> **NOTE:**
+> If you are using environment variables, keep the quotes around cookie to avoid word-splitting and authentication errors.
+> - Linux/macOS: `"$GOOGLE_COOKIE"`
+> - PowerShell: `"$env:GOOGLE_COOKIE"`
+> - Command Prompt: `"%GOOGLE_COOKIE%"`
+
 - Generating image with prompt
 
     ```bash
     # saves generated image at current directory
-    imagefx generate --prompt "A bad friend" --cookie $GOOGLE_COOKIE
+    imagefx generate --prompt "A bad friend" --cookie "$GOOGLE_COOKIE"
     ```
 - Selecting a specific model
     ```bash
     # please refer to --help for listing all models
-    imagefx generate --prompt "An evil company" --model "IMAGEN_3_5" --cookie $GOOGLE_COOKIE
+    imagefx generate --prompt "An evil company" --model "IMAGEN_3_5" --cookie "$GOOGLE_COOKIE"
     ```
 - Selecting a specific aspect ratio
     ```bash
     # please refer to --help for listing all aspect ratio
-    imagefx generate --prompt "Reptillian CEO" --size "PORTRAIT" --cookie $GOOGLE_COOKIE
+    imagefx generate --prompt "Reptillian CEO" --size "PORTRAIT" --cookie "$GOOGLE_COOKIE"
     ```
 - Saving to specific destination
     ```bash
     # it will automatically create non-existing directory if possible
-    imagefx generate --prompt "Netflix but with less fees" --dir ~/Pictures --cookie $GOOGLE_COOKIE
+    imagefx generate --prompt "Netflix but with less fees" --dir ~/Pictures --cookie "$GOOGLE_COOKIE"
     ```
 - You can also save image using its media id.
     ```bash
-    imagefx fetch "__MEDIA__ID__HERE__" --cookie $GOOGLE_COOKIE
+    imagefx fetch "__MEDIA__ID__HERE__" --cookie "$GOOGLE_COOKIE"
     ```
 - Generating prompt/caption using an image as reference.
     ```bash
     # supported image types: jpeg, jpg, jpe, png, gif, webp, svg, bmp, tiff, apng, avif (not tested with all)
-    imagefx caption --image /path/to/img.webp --type WEBP --cookie $GOOGLE_COOKIE
+    imagefx caption --image /path/to/img.webp --type WEBP --cookie "$GOOGLE_COOKIE"
     ```
 Full generation help:
 ```text
@@ -176,9 +198,6 @@ More examples are at: [/examples](https://github.com/rohitaryal/imageFX-api/tree
 
 Create an issue [here](https://github.com/rohitaryal/imageFX-api/issues). Make sure the pasted logs don't contain cookie or tokens.
 </details>
-
-## TODO
-- Maybe add 'features' section in readme
 
 ## Contributions
 Contribution are welcome but ensure to pass all test cases and follow existing coding standard.
