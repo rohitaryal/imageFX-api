@@ -4,3 +4,4 @@ export { Prompt, PromptError } from "./Prompt.js";
 export { Image, ImageError } from "./Image.js";
 export { AspectRatio, Model, DefaultHeader } from "./Constants.js";
 export * from "./Types.js";
+export * as db from "./db.js";

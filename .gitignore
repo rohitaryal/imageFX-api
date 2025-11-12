@@ -130,3 +130,15 @@ dist
 .pnp.*
 .auth
 .png
+
+# Database
+*.sql.gz
+*.dump
+backup_*.sql
+
+# Docker
+docker-compose.override.yml
+
+# Output directories
+output/
+.cache/
