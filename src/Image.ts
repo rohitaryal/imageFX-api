@@ -1,7 +1,7 @@
 import { join } from "path";
 import { AspectRatio, Model } from "./Constants.js";
 import { ImageArg } from "./Types.js";
-import { existsSync, mkdirSync, writeFileSync, } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 
 export class ImageError extends Error {
     constructor(message: string) {
@@ -38,6 +38,11 @@ export class Image {
     public readonly prompt: string;
 
     /**
+     * Index of generated image
+     */
+    public readonly idx?: number;
+
+    /**
      * Aspect ratio of this image
      */
     public readonly aspectRatio: AspectRatio;
@@ -62,7 +67,7 @@ export class Image {
      */
     private readonly fingerprintId: string; // fingerprintLogRecordId
 
-    constructor(args: ImageArg) {
+    constructor(args: ImageArg, index?: number) {
         if (!args.encodedImage?.trim()) {
             throw new ImageError("Encoded image data is required");
         }
@@ -76,6 +81,7 @@ export class Image {
         this.encodedImage = args.encodedImage;
         this.mediaId = args.mediaGenerationId;
         this.fingerprintId = args.fingerprintLogRecordId;
+        this.idx = index || 0;
     }
 
     /**
@@ -85,10 +91,10 @@ export class Image {
      * @param filePath Directory for the image to be saved
      */
     public save(filePath = ".") {
-        const imageName = `image-${Date.now()}.png`;
+        const imageName = `image-${this.idx}-${Date.now()}.png`;
 
         if (!existsSync(filePath)) {
-            console.log("[*] Creating destination dir:", filePath)
+            console.log("[*] Creating destination dir:", filePath);
 
             try {
                 mkdirSync(filePath, { recursive: true });
