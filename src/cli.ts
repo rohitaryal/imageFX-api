@@ -202,5 +202,4 @@ await y
     .wrap(Math.min(y.terminalWidth(), 150))
     .help()
     .alias("help", "h")
-    .showHelpOnFail(true)
     .parse(hideBin(process.argv));

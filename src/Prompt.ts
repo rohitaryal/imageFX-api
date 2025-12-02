@@ -47,8 +47,6 @@ export class Prompt {
      * Note: `"IMAGEN_3_5"` is probably `IMAGEN_4`
      * 
      * Available models:
-     * - `"IMAGEN_3"`
-     * - `"IMAGEN_3_1"`
      * - `"IMAGEN_3_5"`
      */
     generationModel: Model;
@@ -58,7 +56,7 @@ export class Prompt {
         this.prompt = args.prompt;
         this.numberOfImages = args.numberOfImages ?? 1;
         this.aspectRatio = args.aspectRatio ?? AspectRatio.LANDSCAPE;
-        this.generationModel = args.generationModel ?? Model.IMAGEN_3;
+        this.generationModel = args.generationModel ?? Model.IMAGEN_3_5;
     }
 
     /**

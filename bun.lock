@@ -1,15 +1,16 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@rohitaryal/imagefx-api",
       "dependencies": {
-        "typescript": "^5.9.2",
         "yargs": "^18.0.0",
       },
       "devDependencies": {
         "@types/bun": "^1.2.21",
         "@types/yargs": "^17.0.33",
+        "typescript": "^5.9.2",
       },
     },
   },

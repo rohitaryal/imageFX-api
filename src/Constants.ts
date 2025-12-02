@@ -1,6 +1,4 @@
 export const Model = Object.freeze({
-    IMAGEN_3: "IMAGEN_3",
-    IMAGEN_3_1: "IMAGEN_3_1",
     IMAGEN_3_5: "IMAGEN_3_5",
 } as const);
 
