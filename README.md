@@ -9,7 +9,7 @@ npm i -g @rohitaryal/imagefx-api
 ```
 
 ## Features
-1. Text to image using `IMAGEN_3/4`
+1. Text to image using `IMAGEN_4`
 2. Image to text
 3. Command line support
 

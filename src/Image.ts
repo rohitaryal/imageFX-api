@@ -26,8 +26,6 @@ export class Image {
     * Note: `"IMAGEN_3_5"` is probably `IMAGEN_4`
     * 
     * Available models:
-    * - `"IMAGEN_3"`
-    * - `"IMAGEN_3_1"`
     * - `"IMAGEN_3_5"`
     */
     public readonly model: Model; // modelNameType
