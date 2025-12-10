@@ -51,7 +51,7 @@ export class ImageFX {
         await this.account.refreshSession()
 
         const generatedImages = await this.fetchImages(prompt, retries);
-        return generatedImages.map((data: ImageArg) => new Image(data));
+        return generatedImages.map((data: ImageArg, idx) => new Image(data, idx));
     }
 
     /**
