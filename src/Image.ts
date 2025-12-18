@@ -83,7 +83,8 @@ export class Image {
      * @param filePath Directory for the image to be saved
      */
     public save(filePath = ".") {
-        const imageName = `image-${Date.now()}.png`;
+				// Prevent image name collison thus eliminating replacement
+        const imageName = `image-${crypto.randomUUID().slice(-8)}.png`;
 
         if (!existsSync(filePath)) {
             console.log("[*] Creating destination dir:", filePath)
