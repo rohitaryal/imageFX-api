@@ -1,45 +1,60 @@
 # imageFX-api (imagen)
+
 Unofficial free reverse engineered api for imageFX(imagen) service provided by [labs.google](https://labs.google)
+
+Try live demo [here](https://imagefx.rohitsharma.com.np). *(Can be down)*
 
 ![Banner](https://raw.githubusercontent.com/rohitaryal/imageFX-api/refs/heads/main/assets/banner.png)
 
 ## Installation
+
 ```bash
 npm i -g @rohitaryal/imagefx-api
+# or
+bun i -g @rohitaryal/imagefx-api
 ```
 
 ## Features
+
 1. Text to image using `IMAGEN_4`
 2. Image to text
 3. Command line support
 
 ## Usage
+
 `imagefx` can be invoked through both command line and as a module.
 <details>
 <summary style="font-weight: bold;font-size:15px;">Command Line</summary>
 
 Make sure you have:
+
 1. Installed `imagefx` globally ([How to install?](#installation))
 2. Obtained your google account cookies ([How to get cookies?](#help))
 3. Set env variable `GOOGLE_COOKIE` containing your cookie
-    
+
     Bash:
+
     ```bash
     export GOOGLE_COOKIE="__YOUR__COOKIE__HERE__"
     ```
+
     Command Prompt:
+
     ```bat
     set "GOOGLE_COOKIE=__YOUR__COOKIE__HERE__"
     ```
+
     Powershell:
+
     ```ps
     $GOOGLE_COOKIE = "__YOUR__GOOGLE__COOKIE__HERE__"
     ```
 
-#### Basic Usages:
+#### Basic Usages
 
 > **NOTE:**
 > If you are using environment variables, keep the quotes around cookie to avoid word-splitting and authentication errors.
+>
 > - Linux/macOS: `"$GOOGLE_COOKIE"`
 > - PowerShell: `"$env:GOOGLE_COOKIE"`
 > - Command Prompt: `"%GOOGLE_COOKIE%"`
@@ -50,31 +65,43 @@ Make sure you have:
     # saves generated image at current directory
     imagefx generate --prompt "A bad friend" --cookie "$GOOGLE_COOKIE"
     ```
+
 - Selecting a specific model
+
     ```bash
     # please refer to --help for listing all models
     imagefx generate --prompt "An evil company" --model "IMAGEN_3_5" --cookie "$GOOGLE_COOKIE"
     ```
+
 - Selecting a specific aspect ratio
+
     ```bash
     # please refer to --help for listing all aspect ratio
     imagefx generate --prompt "Reptillian CEO" --size "PORTRAIT" --cookie "$GOOGLE_COOKIE"
     ```
+
 - Saving to specific destination
+
     ```bash
     # it will automatically create non-existing directory if possible
     imagefx generate --prompt "Netflix but with less fees" --dir ~/Pictures --cookie "$GOOGLE_COOKIE"
     ```
+
 - You can also save image using its media id.
+
     ```bash
     imagefx fetch "__MEDIA__ID__HERE__" --cookie "$GOOGLE_COOKIE"
     ```
+
 - Generating prompt/caption using an image as reference.
+
     ```bash
     # supported image types: jpeg, jpg, jpe, png, gif, webp, svg, bmp, tiff, apng, avif (not tested with all)
     imagefx caption --image /path/to/img.webp --type WEBP --cookie "$GOOGLE_COOKIE"
     ```
+
 Full generation help:
+
 ```text
 imagefx generate <options>
 
@@ -92,6 +119,7 @@ Options:
 ```
 
 Full caption generation help:
+
 ```text
 Generate detailed caption(s) from image
 
@@ -105,6 +133,7 @@ Options:
 ```
 
 Full fetching help:
+
 ```text
 imagefx fetch <mediaId>
 
@@ -117,6 +146,7 @@ Options:
   -d, --dir      Directory to save generated images
   -c, --cookie   Google account cookie
 ```
+
 </details>
 
 <details>
@@ -138,7 +168,9 @@ Options:
             console.log("[+] Image saved at: " + savedPath);
     });
     ```
+
 - More descriptive prompt
+
     ```typescript
     const fx = new ImageFX(GOOGLE_COOKIE);
 
@@ -164,16 +196,19 @@ More examples are at: [/examples](https://github.com/rohitaryal/imageFX-api/tree
 </details>
 
 ## Help
+
 <details>
 <summary style="font-weight: bold;font-size:15px;">How to extract cookies?</summary>
 
-#### Easy way:
+#### Easy way
+
 1. Install [Cookie Editor](https://github.com/Moustachauve/cookie-editor) extension in your browser.
 2. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
 3. Click on <kbd>Cookie Editor</kbd> icon from Extensions section.
 4. Click on <kbd>Export</kbd> -> <kbd>Header String</kbd>
 
-#### Manual way:
+#### Manual way
+
 1. Open [labs.google](https://labs.google/fx/tools/image-fx), make sure you are logged in
 2. Press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>I</kbd> to open console
 3. Click on <kbd>Network</kbd> tab at top of console
@@ -191,6 +226,7 @@ More examples are at: [/examples](https://github.com/rohitaryal/imageFX-api/tree
 2. Open [labs.google](https://labs.google/fx/tools/image-fx) and login
 3. From here follow the "How to extract cookie?" in [HELP](#help) section (above).
 4. Once you have obtained this cookie, you don't need VPN anymore.
+
 </details>
 
 <details>
@@ -200,7 +236,10 @@ Create an issue [here](https://github.com/rohitaryal/imageFX-api/issues). Make s
 </details>
 
 ## Contributions
+
 Contribution are welcome but ensure to pass all test cases and follow existing coding standard.
 
 ## Disclaimer
+
 This project demonstrates usage of Google's private API but is not affiliated with Google. Use at your own risk.
+
