@@ -50,7 +50,7 @@ export class Image {
     /**
      * Generated `png` image encoded into base64.
      */
-    private readonly encodedImage: string;
+    readonly encodedImage: string;
     /**
      * Project id is what i can guess
      */
@@ -83,7 +83,7 @@ export class Image {
      * @param filePath Directory for the image to be saved
      */
     public save(filePath = ".") {
-				// Prevent image name collison thus eliminating replacement
+        // Prevent image name collison thus eliminating replacement
         const imageName = `image-${crypto.randomUUID().slice(-8)}.png`;
 
         if (!existsSync(filePath)) {
